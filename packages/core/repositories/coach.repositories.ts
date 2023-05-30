@@ -4,11 +4,11 @@ import {CoachTypes} from"../database/idatabase"
 
 
 
-export const createCoach = async (coach:CoachTypes ) => {
+export const createCoach = async (coach:Omit<CoachTypes, 'id' | 'createAt'> ) => {
      const results = await db.insertInto('coachs').values([{
          email: coach.email,
          password: coach.password
-     }]).executeTakeFirst()
+     }]).execute()
     return results
 }
 export const getByMail = async (mail: string) => {
