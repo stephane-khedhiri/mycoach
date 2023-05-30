@@ -8,7 +8,7 @@ export const createCoach = async (coach:CoachTypes ) => {
      const results = await db.insertInto('coachs').values([{
          email: coach.email,
          password: coach.password
-     }]).execute()
+     }]).executeTakeFirst()
     return results
 }
 export const getByMail = async (mail: string) => {
@@ -26,7 +26,7 @@ export const getById = async (id: string) => {
     return res
 }
 
-export const test = async () => {
+export const all = async () => {
     const res = await db
         .selectFrom('coachs')
         .selectAll()
