@@ -1,7 +1,7 @@
 import {getById} from '@mycoach/core/repositories/coach.repositories'
 import {usePathParams} from "sst/node/api";
 
-export const get = async () => {
+export const handler = async () => {
 
         // get params request
         const {id} = usePathParams()
