@@ -18,7 +18,7 @@ export async function up(db) {
         .addColumn(`password`, "varchar", (col) =>
             col.notNull()
         )
-        .addColumn("createAt", "timestamp", (col) =>
+        .addColumn("createdAt", "timestamp", (col) =>
             col.defaultTo(sql`now()`)
         )
         .$call((qb) => {
