@@ -7,15 +7,10 @@ import {
     Insertable,
     Updateable,
 } from 'kysely'
-export type CoachTypes =  {
-    id: Generated<string>
-    email: string;
-    password: string;
-    createAt:Generated<Date>
+import {ICoachTable} from "./coach.table";
 
-}
 export interface IDatabase {
-    coachs: CoachTypes
+    coachs: ICoachTable
     personalInformationsCoach: {
         coachId: Generated<string>
         firstName: string
