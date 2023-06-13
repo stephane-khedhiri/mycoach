@@ -1,6 +1,6 @@
 export type UserApiErrors = 'invalidUser' | 'UserNotFound'
 export type ErrorCode = 'UserApiErrors'
-export type ErrorStatus = 401
+export type ErrorStatus = 401 | 400
 export class UserError extends Error {
     constructor(
         readonly status: ErrorStatus,
