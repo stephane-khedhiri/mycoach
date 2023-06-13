@@ -5,6 +5,10 @@
     "baseUrl": ".",
     "paths": {
       "@mycoach/core/*": ["../core/src/*"]
-    }
+    },
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   }
 }

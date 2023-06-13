@@ -13,9 +13,9 @@ export function ApiStack({stack}: StackContext) {
             },
         },
         routes: {
-            "GET /": "packages/apiCoach/src/list.handler",
-            "GET /{id}": "packages/apiCoach/src/get.handler",
-            "POST /create": "packages/apiCoach/src/add.handler",
+            "GET /": "packages/apiCoach/src/lambda/list.handler",
+            "GET /{id}": "packages/apiCoach/src/lambda/get.handler",
+            "POST /create": "packages/apiCoach/src/lambda/add.handler",
         },
 
     });
