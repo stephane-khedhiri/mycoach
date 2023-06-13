@@ -1,7 +1,7 @@
 import {getById} from '@mycoach/core/repositories/coach.repositories'
 import {usePathParams} from "sst/node/api";
-import {APIGatewayProxyHandlerV2} from "aws-lambda";
-export const handler: APIGatewayProxyHandlerV2 = async (events, context, callback) => {
+
+export const handler = async () => {
 
         // get params request
         const {id} = usePathParams()
@@ -9,9 +9,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (events, context, callbac
             throw new Error('param id not found');
         }
         const coach = await getById(id)
-
         return {
             statusCode:200,
-            body: JSON.stringify(coach),
+            body: coach,
         }
 }

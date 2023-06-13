@@ -5,7 +5,7 @@ node_modules
 # sst
 .sst
 .build
-
+cdk.context.json
 
 # opennext
 .open-next
@@ -15,4 +15,3 @@ node_modules
 
 # local env files
 .env*.local
-cdk.context.json
