@@ -1,4 +1,4 @@
-import {RegisterCoachDto} from "../dto/coach.dto";
+import {CreateCoachDto} from "../dto/create.coach.dto";
 import {validate} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
 
@@ -9,7 +9,7 @@ export const handler = async (event: APIGatewayProxyEventV2 ) => {
     let statusCode, body
     try {
         const datas = event.body as string
-        const coach = Object.assign(new RegisterCoachDto, JSON.parse(datas))
+        const coach = Object.assign(new CreateCoachDto, JSON.parse(datas))
         await validate(coach).then((result) => {
             const error = result[0]
             if(error !== undefined && error.constraints){
