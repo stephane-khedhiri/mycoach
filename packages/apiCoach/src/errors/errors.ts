@@ -4,8 +4,21 @@ export type ErrorStatus = 401 | 400
 
 export class NotFound extends Error {
     readonly statusCode = 404
+    constructor(message:string) {
+        super(message);
+    }
+}
+
+export class UserNotFound extends NotFound {
     constructor() {
-        super();
+        super('user not found');
+        this.name = 'UserNotFound'
+    }
+    toJSON(){
+        return {
+            type: this.name,
+            message: this.message
+        }
     }
 }
 

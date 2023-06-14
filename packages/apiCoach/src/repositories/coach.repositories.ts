@@ -1,5 +1,6 @@
 import {Database} from "../database"
 import {CoachRow, InsertableCoachRow} from "../database/coach.table";
+import {sql} from "kysely";
 
 
 export class CoachRepository extends Database{
@@ -15,8 +16,8 @@ export class CoachRepository extends Database{
     findById = async (id: string) : Promise<CoachRow | undefined> => {
          const coach = await this.db
              .selectFrom('coachs')
-             .where('id', '=', id)
-             .selectAll()
+             .where('id', '=', sql`uuid(id)`)
+             .selectAll('coachs')
              .executeTakeFirst()
 
         return coach
