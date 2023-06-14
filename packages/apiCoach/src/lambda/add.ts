@@ -1,28 +1,32 @@
-import {IRegisterCoach, RegisterCoachDto} from "../dto/coach.dto";
-import {validate, registerSchema, ValidationError} from "class-validator";
-import {CoachRepository} from "../repositories/coach.repositories";
+import {RegisterCoachDto} from "../dto/coach.dto";
+import {validate} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
-import {UserError} from "@mycoach/core/util/errors";
-export const handler = async (event: APIGatewayProxyEventV2 ) => {
+import {UserBadRequest} from "../errors/errors";
+import {CoachRepository} from "../repositories/coach.repositories";
+import * as console from "console";
 
+export const handler = async (event: APIGatewayProxyEventV2 ) => {
+    let statusCode, body
+    try{
         const datas = event.body as string
-    try {
+
         const coach = Object.assign(new RegisterCoachDto, JSON.parse(datas))
         await validate(coach).then((result) => {
             const error = result[0]
             if(error !== undefined && error.constraints){
-                throw new UserError(401, 'UserApiErrors', `${error.property}: ${error.value} is not valide`, coach)
+                throw new UserBadRequest(error.property, error.value)
             }
         })
-        return {
-            statusCode:200,
-            body: coach
-        }
-    }catch (e : UserError|any) {
-        return {
-            statusCode: e.status,
-            datas: e
-        }
+        statusCode = 200
+        body = await new CoachRepository().create(coach)
+
+    }catch (e : UserBadRequest|any) {
+        statusCode = e.statusCode
+        body = e.toJSON()
+    }
+    return {
+        statusCode,
+        body
     }
 
 }
