@@ -31,5 +31,13 @@ export class CoachRepository extends Database{
 
         return coach
     }
+    // add join
+    all = async () : Promise<CoachRow[] | undefined> => {
+         const coachs = await this.db
+             .selectFrom('coachs')
+             .selectAll()
+             .execute()
+        return coachs
+    }
 }
 
