@@ -6,15 +6,13 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
     let statusCode, body
     try {
         body = await new CoachRepository().findById(event.pathParameters?.id as string)
-        if(!body){
+        if (!body) {
             throw new UserNotFound()
         }
         statusCode = 200
-
-
-    }catch (e: UserNotFound| any) {
+    } catch (e: UserNotFound | any) {
         statusCode = e.statusCode
-        body = e.toJSON()
+        body = JSON.stringify(e.toJSON())
     }
     return {
         statusCode,
