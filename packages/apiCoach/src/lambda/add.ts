@@ -1,9 +1,10 @@
 import {CreateCoachDto} from "../dto/create.coach.dto";
 import {validateSync} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
-
+import { plainToClass } from 'class-transformer';
 import {DomainError, UserBadRequest} from "../errors/errors";
 import {CoachRepository} from "../repositories/coach.repositories";
+import {UserProjection} from "../projection/userProjection";
 
 export const handler = async (event: APIGatewayProxyEventV2 ) => {
     try {
@@ -13,9 +14,11 @@ export const handler = async (event: APIGatewayProxyEventV2 ) => {
         if(errors.length > 0){
             throw new UserBadRequest(errors)
         }
+
+        const coach = await new CoachRepository().create(createCoachDto)
         return {
             statusCode: 200,
-            body: JSON.stringify('test')
+            body: JSON.stringify(plainToClass(UserProjection, coach))
         }
 
     }catch (e: DomainError | any) {
