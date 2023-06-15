@@ -13,10 +13,10 @@ export function ApiStack({stack}: StackContext) {
             },
         },
         routes: {
-            "GET /": "packages/api/src/lambda/list.handler",
-            "GET /{id}": "packages/api/src/lambda/get.handler",
-            "POST /": "packages/api/src/lambda/add.handler",
-            "PUT /": "packages/api/src/lambda/update.handler",
+            "GET /": "packages/api/src/lambda/coach/list.handler",
+            "GET /{id}": "packages/api/src/lambda/coach/get.handler",
+            "POST /": "packages/api/src/lambda/coach/add.handler",
+            "PUT /": "packages/api/src/lambda/coach/update.handler",
         },
 
     });
