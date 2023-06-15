@@ -1,6 +1,6 @@
 import {APIGatewayProxyEventV2} from "aws-lambda";
-import {CoachRepository} from "../repositories/coach.repositories";
-import {UserNotFound} from "../errors/errors";
+import {CoachRepository} from "../../repositories/coach.repositories";
+import {UserNotFound} from "../../errors/errors";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     let statusCode, body

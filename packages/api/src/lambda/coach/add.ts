@@ -1,10 +1,10 @@
-import {CreateCoachDto} from "../dto/create.coach.dto";
+import {CreateCoachDto} from "../../dto/coach/create.coach.dto";
 import {validateSync} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
 import { plainToClass } from 'class-transformer';
-import {DomainError, UserBadRequest} from "../errors/errors";
-import {CoachRepository} from "../repositories/coach.repositories";
-import {UserProjection} from "../projection/userProjection";
+import {DomainError, UserBadRequest} from "../../errors/errors";
+import {CoachRepository} from "../../repositories/coach.repositories";
+import {UserProjection} from "../../projection/coach/userProjection";
 
 export const handler = async (event: APIGatewayProxyEventV2 ) => {
     try {

@@ -1,9 +1,9 @@
 import {APIGatewayProxyEventV2} from "aws-lambda";
-import {UpdateableCoachRow} from "../database/coach.table";
+import {UpdateableCoachRow} from "../../database/coach.table";
 import {validate} from "class-validator";
-import {UserBadRequest} from "../errors/errors";
-import {UpdateCoachDto} from "../dto/update.coach.dto";
-import {CoachRepository} from "../repositories/coach.repositories";
+import {UserBadRequest} from "../../errors/errors";
+import {UpdateCoachDto} from "../../dto/coach/update.coach.dto";
+import {CoachRepository} from "../../repositories/coach.repositories";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     let statusCode, body
