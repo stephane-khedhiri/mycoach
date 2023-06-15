@@ -25,4 +25,7 @@ export function ApiStack({stack}: StackContext) {
         SecretArn: cluster.secretArn,
         ClusterIdentifier: cluster.clusterIdentifier,
     });
+    return {
+        api,
+    }
 }
