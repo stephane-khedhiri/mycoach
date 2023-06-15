@@ -15,7 +15,7 @@ export function ApiStack({stack}: StackContext) {
         routes: {
             "GET /": "packages/apiCoach/src/lambda/list.handler",
             "GET /{id}": "packages/apiCoach/src/lambda/get.handler",
-            "POST /create": "packages/apiCoach/src/lambda/add.handler",
+            "POST /": "packages/apiCoach/src/lambda/add.handler",
             "PUT /": "packages/apiCoach/src/lambda/update.handler",
         },
 
