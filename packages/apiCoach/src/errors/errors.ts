@@ -1,48 +1,66 @@
-export type UserApiErrors = 'invalidUser' | 'UserNotFound'
+import {ValidationError} from "class-validator";
+import {constants} from 'http2'
+
 export type ErrorCode = 'UserApiErrors'
-export type ErrorStatus = 401 | 400
 
-export class NotFound extends Error {
-    readonly statusCode = 404
-    constructor(message:string) {
+export abstract class DomainError extends Error {
+    protected constructor(readonly code: number, message: string) {
         super(message);
+    }
+    abstract toJson(): string
+}
+
+export abstract class ResourceNotFound extends DomainError {
+    protected constructor(resource: string) {
+        super(constants.HTTP_STATUS_NOT_FOUND, `${resource} not found`);
     }
 }
 
-export class UserNotFound extends NotFound {
+export class UserNotFound extends ResourceNotFound {
     constructor() {
-        super('user not found');
-        this.name = 'UserNotFound'
+        super('User');
     }
-    toJSON(){
-        return {
-            type: this.name,
+    toJson(): string {
+        return JSON.stringify({
+            type: this.constructor.name,
             message: this.message
-        }
+        })
     }
+
 }
 
-export class BadRequest extends Error {
-    readonly statusCode = 400
-    constructor(message: string) {
-        super(message);
+export abstract class BadRequest extends DomainError {
+    protected constructor(message: string) {
+        super(constants.HTTP_STATUS_BAD_REQUEST, message);
     }
 }
 export class UserBadRequest extends BadRequest {
-    constructor(ressource: string, value?: string) {
-        if(value === undefined){
-            super(`${ressource} is required`);
-        }else{
-
-            super(`${ressource}: ${value} is not valide`);
-        }
-        this.name = 'invalidUser'
+    constructor(readonly validationErrors: ValidationError[]) {
+        super('UserInvalid');
     }
 
-    toJSON(){
-        return {
-            type: this.name,
-            message: this.message
+    toJson(): string{
+        return JSON.stringify({
+            type: this.constructor.name,
+            message: this.message,
+            errors: this.MessageFormatter()
+        })
+    }
+
+    MessageFormatter(){
+        const errors = []
+        for(const validationError of this.validationErrors){
+            if(validationError.constraints){
+                for (const key in validationError.constraints){
+                    if(validationError.constraints[key]){
+                        errors.push({
+                            field: validationError.property,
+                            message: validationError.constraints[key]
+                        })
+                    }
+                }
+            }
         }
+        return errors
     }
 }
