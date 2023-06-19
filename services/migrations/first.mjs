@@ -10,10 +10,14 @@ export async function up(db) {
     await db.schema
         .createTable(`coachs`)
         .addColumn("id", "uuid", (col) =>
-            col.primaryKey().defaultTo(sql`uuid_generate_v4()`)
+            col
+                .primaryKey()
+                .defaultTo(sql`uuid_generate_v4()`)
         )
         .addColumn(`email`, "varchar", (col) =>
-            col.unique().notNull()
+            col
+                .unique()
+                .notNull()
         )
         .addColumn(`password`, "varchar", (col) =>
             col.notNull()

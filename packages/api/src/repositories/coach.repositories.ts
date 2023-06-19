@@ -2,7 +2,7 @@ import {Database} from "../database"
 import {CoachRow, InsertableCoachRow, UpdateableCoachRow} from "../database/coach.table";
 import {sql} from "kysely";
 import {UpdateResult} from "kysely";
-import {UpdateCoachDto} from "../dto/update.coach.dto";
+import {UpdateCoachDto} from "../dto/coach/update.coach.dto";
 
 
 export class CoachRepository extends Database {

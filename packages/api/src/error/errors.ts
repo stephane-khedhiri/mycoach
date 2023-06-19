@@ -64,3 +64,16 @@ export class UserBadRequest extends BadRequest {
         return errors
     }
 }
+
+export class UnAuthorized extends BadRequest {
+    constructor() {
+        super('UnAuthorized');
+    }
+    toJson(): string {
+        return JSON.stringify({
+            type: this.constructor.name,
+            message: this.message
+        })
+    }
+
+}
