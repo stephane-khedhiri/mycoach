@@ -1,13 +1,11 @@
 import {Database} from "../database"
 import {CoachRow, InsertableCoachRow, UpdateableCoachRow} from "../database/coach.table";
 import {sql} from "kysely";
-import {UpdateResult} from "kysely";
-import {UpdateCoachDto} from "../dto/update.coach.dto";
 
 
 export class CoachRepository extends Database {
-    create = async (coach: InsertableCoachRow): Promise<CoachRow> => {
-        const insertCoach = await this.db
+    create = (coach: InsertableCoachRow): Promise<CoachRow> => {
+        const insertCoach = this.db
             .insertInto('coachs')
             .values(coach)
             .returningAll()
@@ -15,10 +13,10 @@ export class CoachRepository extends Database {
 
         return insertCoach
     }
-    update = async (coach: UpdateCoachDto): Promise< CoachRow |undefined> => {
+    update =  (coach: UpdateableCoachRow): Promise< CoachRow |undefined> => {
         const {id} = coach
         Reflect.deleteProperty(coach, 'id')
-        const update = await this.db
+        const update = this.db
             .updateTable('coachs')
             .set({...coach})
             .where('id', '=', sql`uuid(id)`)
@@ -26,8 +24,8 @@ export class CoachRepository extends Database {
             .executeTakeFirst()
         return update
     }
-    findById = async (id: string): Promise<CoachRow | undefined> => {
-        const coach = await this.db
+    findById = (id: string): Promise<CoachRow | undefined> => {
+        const coach= this.db
             .selectFrom('coachs')
             .where('id', '=', sql`uuid(id)`)
             .selectAll('coachs')
@@ -35,8 +33,8 @@ export class CoachRepository extends Database {
 
         return coach
     }
-    findByEmail = async (email: string): Promise<CoachRow | undefined> => {
-        const coach = await this.db
+    findByEmail =  (email: string): Promise<CoachRow | undefined> => {
+        const coach= this.db
             .selectFrom('coachs')
             .where('email', '=', email)
             .selectAll()
@@ -45,8 +43,8 @@ export class CoachRepository extends Database {
         return coach
     }
     // add join
-    all = async (): Promise<CoachRow[] | undefined> => {
-        const coachs = await this.db
+    all = (): Promise<CoachRow[] | undefined> => {
+        const coachs =  this.db
             .selectFrom('coachs')
             .selectAll()
             .execute()

@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.4",
+    "@types/bcrypt": "^5.0.0",
     "aws-cdk-lib": "2.72.1",
     "constructs": "10.1.156",
     "sst": "^2.8.22",
@@ -20,9 +21,5 @@
   },
   "workspaces": [
     "packages/*"
-  ],
-  "dependencies": {
-    "kysely": "^0.24.2",
-    "kysely-data-api": "^0.2.1"
-  }
+  ]
 }
