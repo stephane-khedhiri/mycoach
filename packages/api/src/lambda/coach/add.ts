@@ -10,16 +10,16 @@ import {Config} from "sst/node/config";
 import {encodePassword} from "../../util/password";
 
 
+
 export const handler = async (event: APIGatewayProxyEventV2 ) => {
     try {
-        throw new Error()
-        const createCoachDto = Object.assign(CreateCoachDto, JSON.parse(event.body?? ''))
-
+        const createCoachDto = Object.assign(new CreateCoachDto, JSON.parse(event.body?? ''))
         const errors = validateSync(createCoachDto)
         if(errors.length > 0){
             throw new UserBadRequest(errors)
         }
         createCoachDto.password = encodePassword(createCoachDto.password)
+
 
         const coach = await new CoachRepository().create(createCoachDto)
         const accessToken = generatedToken({id: coach.id, email: coach.email}, Config.PRIVATE_KEY)

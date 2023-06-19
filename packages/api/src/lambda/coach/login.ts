@@ -2,12 +2,13 @@
 import {APIGatewayProxyHandlerV2} from "aws-lambda";
 import {LoginCoachDto} from "../../dto/coach/login.coach.dto";
 import {validateSync} from "class-validator";
-import {DomainError, UserBadRequest} from "../../error/errors";
+import {DomainError, UserBadRequest, UserNotFound} from "../../error/errors";
 import {CoachRepository} from "../../repositories/coach.repositories";
 import {plainToClass} from "class-transformer";
 import {UserProjection} from "../../projection/coach/userProjection";
 import {Config} from "sst/node/config";
 import {generatedToken} from "../../util/jwt";
+import {comparePassword} from "../../util/password";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try{
@@ -19,10 +20,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         const coach = await new CoachRepository().findByEmail(loginCoachDto.email)
         // verification du mdp
         if(!coach){
-            throw new Error('email')
+            throw new UserNotFound()
         }
-        if(coach.password !== loginCoachDto.password){
-            throw new Error('password')
+        if(comparePassword(loginCoachDto.password, coach.password as string) ){
+            throw new UserNotFound()
         }
         return {
             statusCode:200,
