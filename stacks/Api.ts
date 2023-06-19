@@ -6,8 +6,8 @@ export function ApiStack({stack}: StackContext) {
         engine: "postgresql11.13",
         defaultDatabaseName: "myCoach",
         migrations: "services/migrations",
-    });
 
+    });
     const PUBLIC_KEY = new Config.Secret(stack, "PUBLIC_KEY");
     const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY")
 
