@@ -1,4 +1,3 @@
-
 import {APIGatewayProxyHandlerV2} from "aws-lambda";
 import {LoginCoachDto} from "../../dto/coach/login.coach.dto";
 import {validateSync} from "class-validator";

@@ -1,6 +1,4 @@
 import {
-    APIGatewayProxyEventV2,
-    APIGatewayProxyHandlerV2,
     APIGatewayProxyHandlerV2WithLambdaAuthorizer
 } from "aws-lambda";
 import {CoachRepository} from "../../repositories/coach.repositories";
