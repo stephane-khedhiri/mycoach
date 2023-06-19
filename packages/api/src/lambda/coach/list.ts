@@ -1,11 +1,9 @@
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
 import {CoachRepository} from "../../repositories/coach.repositories";
-import {Config} from "sst/node/config";
 import {UserPayloadWithJwt} from "../../types";
 
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
     try {
-        console.log(event.requestContext.authorizer.lambda.email)
         const coachs = await new CoachRepository().all()
         return {
             statusCode: 200,

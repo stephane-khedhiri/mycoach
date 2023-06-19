@@ -27,7 +27,7 @@ export function ApiStack({stack}: StackContext) {
             function: {
                 bind: [cluster],
             },
-            authorizer: 'myAuth'
+            authorizer: 'myAuth',
         },
         routes: {
             "GET /": "packages/api/src/lambda/coach/list.handler",

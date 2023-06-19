@@ -3,9 +3,6 @@ import {
 } from "aws-lambda";
 import {CoachRepository} from "../../repositories/coach.repositories";
 import {verifyTokenOrThrow} from "../../util/jwt";
-import {plainToClass} from "class-transformer";
-import {UserProjection} from "../../projection/coach/userProjection";
-import {JwtPayload} from "jsonwebtoken";
 import {Config} from "sst/node/config"
 import {UserPayloadWithJwt} from "../../types";
 
