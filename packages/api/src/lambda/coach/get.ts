@@ -1,21 +1,31 @@
-import {APIGatewayProxyEventV2} from "aws-lambda";
+import {
+    APIGatewayProxyEventV2,
+    APIGatewayProxyHandlerV2,
+    APIGatewayProxyHandlerV2WithLambdaAuthorizer
+} from "aws-lambda";
 import {CoachRepository} from "../../repositories/coach.repositories";
-import {UserNotFound} from "../../errors/errors";
+import {DomainError, UserNotFound} from "../../error/errors";
+import {plainToClass} from "class-transformer";
+import {UserProjection} from "../../projection/coach/userProjection";
+import {UserPayloadWithJwt} from "../../types";
 
-export const handler = async (event: APIGatewayProxyEventV2) => {
-    let statusCode, body
+export const handler:APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
     try {
-        body = await new CoachRepository().findById(event.pathParameters?.id as string)
-        if (!body) {
+
+
+        const coach = await new CoachRepository().findById(event.pathParameters?.id ?? '')
+        if (!coach) {
             throw new UserNotFound()
         }
-        statusCode = 200
-    } catch (e: UserNotFound | any) {
-        statusCode = e.statusCode
-        body = JSON.stringify(e.toJSON())
+        return {
+            statusCode:200,
+            body: JSON.stringify(plainToClass(UserProjection, coach))
+        }
+    } catch (e: DomainError | any) {
+        return {
+            statusCode:e.code,
+            body: e.toJson()
+        }
     }
-    return {
-        statusCode,
-        body
-    }
+
 }

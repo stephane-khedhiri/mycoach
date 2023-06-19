@@ -1,18 +1,10 @@
-import {IsEmail, IsString, IsDefined} from 'class-validator'
+import {IsDefined, IsEmail, IsString} from "class-validator";
 
-
-export interface ICreateCoachDto {
-    readonly email: string
-    readonly password: string
-}
-
-export class CreateCoachDto{
+export class LoginCoachDto{
     @IsDefined({message: ({property}) =>  `${property} is required` })
     @IsString()
-
     readonly password: string;
     @IsDefined({message: ({property}) =>  `${property} is required` })
     @IsEmail()
-
     readonly email: string;
 }

@@ -1,16 +1,24 @@
-import {APIGatewayProxyEventV2} from "aws-lambda";
+import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
 import {CoachRepository} from "../../repositories/coach.repositories";
+import {Config} from "sst/node/config";
+import {UserPayloadWithJwt} from "../../types";
 
-export const handler = async (event: APIGatewayProxyEventV2) => {
-    let statusCode, body
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
     try {
-        body = await new CoachRepository().all()
+        console.log(event.requestContext.authorizer.lambda.email)
+        const coachs = await new CoachRepository().all()
+        return {
+            statusCode: 200,
+            body: JSON.stringify(coachs)
+        }
     }catch (e: any) {
-        statusCode = 500
-        body= e.message
+        return {
+            statusCode:500,
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(e.message)
+        }
     }
-    return {
-        statusCode,
-        body
-    }
+
 }
