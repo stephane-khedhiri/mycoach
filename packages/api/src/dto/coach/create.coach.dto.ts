@@ -1,4 +1,5 @@
-import {IsEmail, IsString, IsDefined} from 'class-validator'
+import {IsEmail, IsString, IsNotEmpty} from 'class-validator'
+import {IsUserUnique} from "../../decorator/isUserUnique";
 
 
 export interface ICreateCoachDto {
@@ -7,12 +8,12 @@ export interface ICreateCoachDto {
 }
 
 export class CreateCoachDto{
-    @IsDefined({message: ({property}) =>  `${property} is required` })
+    @IsNotEmpty({message: ({property}) =>  `${property} is required` })
     @IsString()
 
     readonly password: string;
-    @IsDefined({message: ({property}) =>  `${property} is required` })
+    @IsNotEmpty({message: ({property}) =>  `${property} is required` })
     @IsEmail()
-
+    @IsUserUnique()
     readonly email: string;
 }
