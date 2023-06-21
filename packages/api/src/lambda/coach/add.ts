@@ -1,5 +1,5 @@
 import {CreateCoachDto} from "../../dto/coach/create.coach.dto";
-import {validateSync} from "class-validator";
+import {validate, validateSync} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
 import { plainToClass } from 'class-transformer';
 import {DomainError, UserBadRequest} from "../../error/errors";
@@ -11,10 +11,13 @@ import {encodePassword} from "../../util/password";
 
 
 
+
 export const handler = async (event: APIGatewayProxyEventV2 ) => {
     try {
+
         const createCoachDto = Object.assign(new CreateCoachDto, JSON.parse(event.body?? ''))
-        const errors = validateSync(createCoachDto)
+        console.log(createCoachDto)
+        const errors = await validate(createCoachDto)
         if(errors.length > 0){
             throw new UserBadRequest(errors)
         }
@@ -30,8 +33,8 @@ export const handler = async (event: APIGatewayProxyEventV2 ) => {
 
     }catch (e: DomainError | any) {
         return {
-            statusCode: e.code,
-            body: e.message
+            statusCode: e.code?? 500,
+            body: typeof e.toJson === 'function'? e.toJson(): e.message
         }
     }
 
