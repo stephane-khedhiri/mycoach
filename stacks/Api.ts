@@ -41,7 +41,7 @@ export function ApiStack({stack,app}: StackContext) {
                         plugins: [
                             // @ts-ignore
                             esbuildDecorators({
-                                tsconfig: path.join(process.cwd(), 'packages/functions/tsconfig.json')
+                                tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
                             }),
                         ],
                     },
