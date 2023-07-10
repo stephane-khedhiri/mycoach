@@ -1,17 +1,14 @@
-import "reflect-metadata"
-import {Users} from "../entity/users";
-import {Database} from "../database/dataSource";
-import {Connection} from "typeorm";
+import type {DataSource} from "typeorm"
+import {UserEntity} from "../entities/user.entity";
 
 
-export class UserRepository extends Database {
-    private UserRepository = this.db.getRepository<Users>(Users)
 
-     all = () => {
-        const users = this.UserRepository.find()
-            this.db.close()
-         return users;
+export class UserRepository {
+    constructor(private readonly db: DataSource ) {}
+
+
+    public all() {
+        return this.db.getRepository(UserEntity).find()
     }
-
 }
 
