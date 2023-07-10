@@ -1,9 +1,9 @@
-import {Api, RDS, StackContext, Function, Config} from "sst/constructs";
+import {Api, RDS, StackContext, Function, Config, Script} from "sst/constructs";
 import {esbuildDecorators} from "@anatine/esbuild-decorators";
 import * as path from "path";
 
 
-export function ApiStack({stack}: StackContext) {
+export function ApiStack({stack,app}: StackContext) {
     // create database
     const cluster = new RDS(stack, "Cluster", {
         engine: "postgresql11.13",
@@ -79,6 +79,33 @@ export function ApiStack({stack}: StackContext) {
         },
 
     });
+
+    // create fixture lambda
+    if(app.mode === 'dev'){
+        const fixture = new Function(stack, 'fixture', {
+            handler: 'packages/api/src/fixture.load',
+            bind: [cluster],
+            enableLiveDev: false,
+            copyFiles: [{from: 'fixtures', to: 'packages/api/src/fixtures'}],
+            nodejs: {
+                esbuild: {
+                    plugins: [
+                        // @ts-ignore
+                        esbuildDecorators({
+                            tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                        }),
+                    ],
+                    external: [
+                        'pg-native',
+                    ]
+                }
+            }
+        })
+        new Script(stack, 'fixtureLoad', {
+            version:'1',
+            onCreate: fixture
+        } )
+    }
 // Show the API endpoint in the output
     stack.addOutputs({
         RDSEndpoint: cluster.clusterEndpoint.socketAddress,

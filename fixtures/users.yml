@@ -1,0 +1,5 @@
+entity: UserEntity
+items:
+  user{1..10}:
+    email: '{{internet.email}}'
+    password: '{{internet.password}}'
