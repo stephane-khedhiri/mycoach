@@ -1,17 +1,26 @@
 import {Api, RDS, StackContext, Function, Config} from "sst/constructs";
+import {esbuildDecorators} from "@anatine/esbuild-decorators";
+import * as path from "path";
 
 
 export function ApiStack({stack}: StackContext) {
+    // create database
     const cluster = new RDS(stack, "Cluster", {
         engine: "postgresql11.13",
         defaultDatabaseName: "myCoach",
-        migrations: "services/migrations",
-
+        scaling: {
+            autoPause: true,
+            minCapacity: "ACU_2",
+            maxCapacity: "ACU_2",
+        }
     });
+    // get variable in could
     const PUBLIC_KEY = new Config.Secret(stack, "PUBLIC_KEY");
-    const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY")
+    const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY");
 
+    // create Api
     const api = new Api(stack, "Api", {
+        // create authorizers
         authorizers: {
             myAuth: {
                 type: "lambda",
@@ -25,42 +34,56 @@ export function ApiStack({stack}: StackContext) {
         },
         defaults: {
             function: {
+                timeout: 5,
                 bind: [cluster],
+                nodejs: {
+                    esbuild: {
+                        plugins: [
+                            // @ts-ignore
+                            esbuildDecorators({
+                                tsconfig: path.join(process.cwd(), 'packages/functions/tsconfig.json')
+                            }),
+                        ],
+                    },
+                    external: [
+                        'pg-native',
+                    ]
+                },
+
             },
-            authorizer: 'myAuth',
+            //authorizer: 'myAuth',
         },
         routes: {
-            "GET /": "packages/api/src/lambda/coach/list.handler",
-            "GET /{id}": "packages/api/src/lambda/coach/get.handler",
-            "POST /": {
-                function : {
-                    handler: "packages/api/src/lambda/coach/add.handler",
-                    bind: [PRIVATE_KEY]
-                },
-                authorizer: "none",
-            },
-            "PUT /": {
-                function:{
-                    handler: "packages/api/src/lambda/coach/update.handler",
-                    bind: [PRIVATE_KEY]
-                }
-            },
-            "POST /login": {
-                function:{
-                    handler: "packages/api/src/lambda/coach/login.handler",
-                    bind: [PUBLIC_KEY]
-                },
-                authorizer: "none"
-            }
+            "GET /": "packages/api/src/coach/list.handler",
+            // "GET /{id}": "packages/api/src/coach/get.handler",
+            // "POST /": {
+            //     function : {
+            //         handler: "packages/api/src/coach/add.handler",
+            //         bind: [PRIVATE_KEY]
+            //     },
+            //     authorizer: "none",
+            // },
+            // "PUT /": {
+            //     function:{
+            //         handler: "packages/api/src/coach/update.handler",
+            //         bind: [PRIVATE_KEY]
+            //     }
+            // },
+            // "POST /login": {
+            //     function:{
+            //         handler: "packages/api/src/coach/login.handler",
+            //         bind: [PUBLIC_KEY]
+            //     },
+            //     authorizer: "none"
+            // }
         },
 
     });
+// Show the API endpoint in the output
     stack.addOutputs({
+        RDSEndpoint: cluster.clusterEndpoint.socketAddress,
         ApiEndpoint: api.url,
-        SecretArn: cluster.secretArn,
-        ClusterIdentifier: cluster.clusterIdentifier,
+
     });
-    return {
-        api,
-    }
+    return {api}
 }

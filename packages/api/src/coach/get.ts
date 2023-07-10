@@ -1,17 +1,17 @@
 import {
     APIGatewayProxyHandlerV2WithLambdaAuthorizer
 } from "aws-lambda";
-import {CoachRepository} from "../../repositories/coach.repositories";
-import {DomainError, UserNotFound} from "../../error/errors";
+import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
+import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
 import {plainToClass} from "class-transformer";
-import {UserProjection} from "../../projection/coach/userProjection";
-import {UserPayloadWithJwt} from "../../types";
+import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
+import {UserPayloadWithJwt} from "@mycoach/core/types";
 
 export const handler:APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
     try {
 
 
-        const coach = await new CoachRepository().findById(event.pathParameters?.id ?? '')
+        const coach = await new CoachRepository().findById(event.pathParameters?.id ?? '', true)
         if (!coach) {
             throw new UserNotFound()
         }

@@ -1,13 +1,13 @@
 import {APIGatewayProxyHandlerV2} from "aws-lambda";
-import {LoginCoachDto} from "../../dto/coach/login.coach.dto";
+import {LoginCoachDto} from "@mycoach/core/dto/coach/login.coach.dto";
 import {validateSync} from "class-validator";
-import {DomainError, UserBadRequest, UserNotFound} from "../../error/errors";
-import {CoachRepository} from "../../repositories/coach.repositories";
+import {DomainError, UserBadRequest, UserNotFound} from "@mycoach/core/error/errors";
+import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
 import {plainToClass} from "class-transformer";
-import {UserProjection} from "../../projection/coach/userProjection";
+import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
 import {Config} from "sst/node/config";
-import {generatedToken} from "../../util/jwt";
-import {comparePassword} from "../../util/password";
+import {generatedToken} from "@mycoach/core/util/jwt";
+import {comparePassword} from "@mycoach/core/util/password";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try{
@@ -33,8 +33,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         }
     }catch (e: DomainError| any) {
         return {
-            statusCode:500,
-            body:e.toJson(),
+            statusCode:e.code??500,
+            body:  e.message,
         }
     }
 }

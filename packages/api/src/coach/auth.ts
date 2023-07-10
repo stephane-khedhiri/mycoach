@@ -1,10 +1,10 @@
 import {
     APIGatewayRequestSimpleAuthorizerHandlerV2WithContext,
 } from "aws-lambda";
-import {CoachRepository} from "../../repositories/coach.repositories";
-import {verifyTokenOrThrow} from "../../util/jwt";
+import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
+import {verifyTokenOrThrow} from "@mycoach/core/util/jwt";
 import {Config} from "sst/node/config"
-import {UserPayloadWithJwt} from "../../types";
+import {UserPayloadWithJwt} from "@mycoach/core/types";
 
 
 
@@ -20,11 +20,11 @@ export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<User
         const userPayload = verifyTokenOrThrow(token, Config.PUBLIC_KEY)
 
         // check user in database
-        const user = await new CoachRepository().findById(userPayload.id)
-        console.log(user)
-        if(!user){
-            throw new Error()
-        }
+        //const user = await new CoachRepository().findById(userPayload.id, false)
+        //console.log(user)
+        // if(!user){
+        //     throw new Error()
+        // }
         return {
             isAuthorized: true,
             context: {

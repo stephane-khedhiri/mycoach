@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@anatine/esbuild-decorators": "^0.2.19",
     "@tsconfig/node16": "^1.0.4",
     "aws-cdk-lib": "2.72.1",
     "constructs": "10.1.156",

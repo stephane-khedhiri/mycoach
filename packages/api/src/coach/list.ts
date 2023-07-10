@@ -1,10 +1,11 @@
+import "reflect-metadata"
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
-import {CoachRepository} from "../../repositories/coach.repositories";
-import {UserPayloadWithJwt} from "../../types";
+import {UserRepository} from "@mycoach/core/repositories/user.repositories";
+import {UserPayloadWithJwt} from "@mycoach/core/types";
 
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
     try {
-        const coachs = await new CoachRepository().all()
+        const coachs = await new UserRepository().all()
         return {
             statusCode: 200,
             body: JSON.stringify(coachs)
