@@ -33,8 +33,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         }
     }catch (e: DomainError| any) {
         return {
-            statusCode:500,
-            body:e.toJson(),
+            statusCode:e.code??500,
+            body:  e.message,
         }
     }
 }

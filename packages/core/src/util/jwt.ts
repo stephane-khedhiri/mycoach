@@ -10,7 +10,8 @@ export const generatedToken = (payload:object, secretsPrivateBase64: string ) =>
 }
 export const verifyTokenOrThrow = (token: string, secretsPublicBase64: string)  => {
     const secretsPublic = Buffer.from(secretsPublicBase64, 'base64').toString('utf-8')
-    const payload = verify(token, secretsPublic) as JwtPayload
+    const key= Buffer.from(secretsPublic, 'base64')
+    const payload = verify(token, key) as JwtPayload
     if (!payload) {
         throw new UnAuthorized()
     }

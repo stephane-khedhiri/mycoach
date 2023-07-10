@@ -11,7 +11,7 @@ export const handler:APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWit
     try {
 
 
-        const coach = await new CoachRepository().findById(event.pathParameters?.id ?? '')
+        const coach = await new CoachRepository().findById(event.pathParameters?.id ?? '', true)
         if (!coach) {
             throw new UserNotFound()
         }

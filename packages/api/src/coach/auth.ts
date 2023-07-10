@@ -20,11 +20,11 @@ export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<User
         const userPayload = verifyTokenOrThrow(token, Config.PUBLIC_KEY)
 
         // check user in database
-        const user = await new CoachRepository().findById(userPayload.id)
-        console.log(user)
-        if(!user){
-            throw new Error()
-        }
+        //const user = await new CoachRepository().findById(userPayload.id, false)
+        //console.log(user)
+        // if(!user){
+        //     throw new Error()
+        // }
         return {
             isAuthorized: true,
             context: {
