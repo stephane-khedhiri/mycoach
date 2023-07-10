@@ -1,7 +1,7 @@
 import "reflect-metadata"
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
-import {UserRepository} from "../../repositories/user.repositories";
-import {UserPayloadWithJwt} from "../../types";
+import {UserRepository} from "@mycoach/core/repositories/user.repositories";
+import {UserPayloadWithJwt} from "@mycoach/core/types";
 
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
     try {

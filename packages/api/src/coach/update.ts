@@ -1,13 +1,13 @@
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
 import {validateSync} from "class-validator";
-import {DomainError, UserBadRequest} from "../../error/errors";
-import {UpdateCoachDto} from "../../dto/coach/update.coach.dto";
-import {CoachRepository} from "../../repositories/coach.repositories";
+import {DomainError, UserBadRequest} from "@mycoach/core/error/errors";
+import {UpdateCoachDto} from "@mycoach/core/dto/coach/update.coach.dto";
+import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
 import {plainToClass} from "class-transformer";
-import {UserProjection} from "../../projection/coach/userProjection";
-import {UserPayloadWithJwt} from "../../types";
+import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
+import {UserPayloadWithJwt} from "@mycoach/core/types";
 import {Config} from "sst/node/config";
-import {generatedToken} from "../../util/jwt"
+import {generatedToken} from "@mycoach/core/util/jwt"
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
 
     try{

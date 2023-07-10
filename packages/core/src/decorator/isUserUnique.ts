@@ -3,7 +3,7 @@ import {
     ValidationArguments,
     ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface,
 } from "class-validator";
-import {CoachRepository} from "../repositories/coach.repositories";
+import {CoachRepository} from "../../../core/src/repositories/coach.repositories";
 
 
 export function IsUserUnique(validationOptions?: ValidationOptions) {

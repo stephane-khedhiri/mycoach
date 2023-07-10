@@ -1,13 +1,13 @@
-import {CreateCoachDto} from "../../dto/coach/create.coach.dto";
+import {CreateCoachDto} from "@mycoach/core/dto/coach/create.coach.dto";
 import {validate} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
 import {plainToClass, plainToInstance} from 'class-transformer';
-import {DomainError, UserBadRequest} from "../../error/errors";
-import {CoachRepository} from "../../repositories/coach.repositories";
-import {UserProjection} from "../../projection/coach/userProjection";
-import {generatedToken} from "../../util/jwt";
+import {DomainError, UserBadRequest} from "@mycoach/core/error/errors";
+import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
+import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
+import {generatedToken} from "@mycoach/core/util/jwt";
 import {Config} from "sst/node/config";
-import {encodePassword} from "../../util/password";
+import {encodePassword} from "@mycoach/core/util/password";
 
 
 

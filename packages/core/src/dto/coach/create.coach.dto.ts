@@ -1,11 +1,11 @@
 import {IsEmail, IsString, IsNotEmpty, IsNumber, ValidateNested, validate} from 'class-validator'
-import {IsUserUnique} from "../../decorator/isUserUnique";
+import {IsUserUnique} from "@mycoach/functions/src/decorator/isUserUnique";
 import {CreatePersonalInformationDto} from "./create.personalInformation.dto";
 import {InsertableCoachRow} from "../../database/coach.table";
 import {PersonalInformationsCoachRow} from "../../database/personalInformationsCoach.table";
 import {Type} from "class-transformer";
 import 'reflect-metadata'
-import {UserBadRequest} from "../../error/errors";
+import {UserBadRequest} from "@mycoach/functions/src/error/errors";
 
 
 export interface ICreateCoachDto {

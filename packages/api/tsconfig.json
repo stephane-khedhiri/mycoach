@@ -2,9 +2,13 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "module": "esnext",
-    "baseUrl": ".",
-    "strictPropertyInitialization": false,
+    "lib": ["ES2022", "DOM"],
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "baseUrl": ".",
+    "paths": {
+      "@mycoach/core/*": ["../core/src/*"]
+    }
   }
 }

@@ -1,10 +1,10 @@
 import {
     APIGatewayRequestSimpleAuthorizerHandlerV2WithContext,
 } from "aws-lambda";
-import {CoachRepository} from "../../repositories/coach.repositories";
-import {verifyTokenOrThrow} from "../../util/jwt";
+import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
+import {verifyTokenOrThrow} from "@mycoach/core/util/jwt";
 import {Config} from "sst/node/config"
-import {UserPayloadWithJwt} from "../../types";
+import {UserPayloadWithJwt} from "@mycoach/core/types";
 
 
 
