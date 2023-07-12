@@ -6,6 +6,4 @@ export class UserProjection {
 
     @Exclude()
     password: string
-
-
 }
