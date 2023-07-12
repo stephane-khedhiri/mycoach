@@ -69,13 +69,13 @@ export function ApiStack({stack, app}: StackContext) {
             //         bind: [PRIVATE_KEY]
             //     }
             // },
-            // "POST /login": {
-            //     function:{
-            //         handler: "packages/api/src/coach/login.handler",
-            //         bind: [PUBLIC_KEY]
-            //     },
-            //     authorizer: "none"
-            // }
+             "POST /login": {
+                 function:{
+                     handler: "packages/api/src/coach/login.handler",
+                     bind: [PUBLIC_KEY]
+                 },
+                 authorizer: "none"
+             }
         },
 
     });
