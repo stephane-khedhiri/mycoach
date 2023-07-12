@@ -1,4 +1,4 @@
-import {IsEmail, IsString, IsNotEmpty, IsNumber, ValidateNested, validate} from 'class-validator'
+import {IsEmail, IsString, IsNotEmpty, ValidateNested} from 'class-validator'
 import {IsUserUnique} from "../../decorator";
 
 
@@ -6,11 +6,12 @@ import {IsUserUnique} from "../../decorator";
 
 
 
-export class CreateCoachDto {
+export class CreateUserDto {
     @IsNotEmpty({message: ({property}) =>  `${property} is required` })
     @IsString()
 
     readonly password: string;
+
     @IsNotEmpty({message: ({property}) =>  `${property} is required` })
     @IsEmail()
     @IsUserUnique()

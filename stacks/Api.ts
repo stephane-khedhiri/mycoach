@@ -3,7 +3,7 @@ import {esbuildDecorators} from "@anatine/esbuild-decorators";
 import * as path from "path";
 
 
-export function ApiStack({stack,app}: StackContext) {
+export function ApiStack({stack, app}: StackContext) {
     // create database
     const cluster = new RDS(stack, "Cluster", {
         engine: "postgresql11.13",
@@ -26,7 +26,7 @@ export function ApiStack({stack,app}: StackContext) {
                 type: "lambda",
                 responseTypes: ["simple"],
                 function: new Function(stack, "Authorizer", {
-                    handler: "packages/api/src/lambda/coach/auth.handler",
+                    handler: "packages/api/src/auth.handler",
                     bind: [PUBLIC_KEY]
                 }),
                 resultsCacheTtl: '5 second'
@@ -56,13 +56,13 @@ export function ApiStack({stack,app}: StackContext) {
         routes: {
             "GET /": "packages/api/src/coach/list.handler",
             // "GET /{id}": "packages/api/src/coach/get.handler",
-            // "POST /": {
-            //     function : {
-            //         handler: "packages/api/src/coach/add.handler",
-            //         bind: [PRIVATE_KEY]
-            //     },
-            //     authorizer: "none",
-            // },
+            "POST /": {
+                function: {
+                    handler: "packages/api/src/coach/add.handler",
+                    bind: [PRIVATE_KEY]
+                },
+                authorizer: "none",
+            },
             // "PUT /": {
             //     function:{
             //         handler: "packages/api/src/coach/update.handler",
@@ -81,7 +81,7 @@ export function ApiStack({stack,app}: StackContext) {
     });
 
     // create fixture lambda
-    if(app.mode === 'dev'){
+    if (app.mode === 'dev') {
         const fixture = new Function(stack, 'fixture', {
             handler: 'packages/api/src/fixture.load',
             bind: [cluster],
@@ -102,9 +102,9 @@ export function ApiStack({stack,app}: StackContext) {
             }
         })
         new Script(stack, 'fixtureLoad', {
-            version:'1',
+            version: '1',
             onCreate: fixture
-        } )
+        })
     }
 // Show the API endpoint in the output
     stack.addOutputs({
