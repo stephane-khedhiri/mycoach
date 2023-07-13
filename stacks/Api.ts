@@ -27,7 +27,20 @@ export function ApiStack({stack, app}: StackContext) {
                 responseTypes: ["simple"],
                 function: new Function(stack, "Authorizer", {
                     handler: "packages/api/src/auth.handler",
-                    bind: [PUBLIC_KEY]
+                    bind: [PRIVATE_KEY, cluster],
+                    nodejs: {
+                        esbuild: {
+                            plugins: [
+                                // @ts-ignore
+                                esbuildDecorators({
+                                    tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                                }),
+                            ],
+                        },
+                        external: [
+                            'pg-native',
+                        ]
+                    },
                 }),
                 resultsCacheTtl: '5 second'
             }
@@ -51,11 +64,11 @@ export function ApiStack({stack, app}: StackContext) {
                 },
 
             },
-            //authorizer: 'myAuth',
+            authorizer: 'myAuth',
         },
         routes: {
             "GET /": "packages/api/src/coach/list.handler",
-            // "GET /{id}": "packages/api/src/coach/get.handler",
+            //"GET /{id}": "packages/api/src/coach/get.handler",
             "POST /": {
                 function: {
                     handler: "packages/api/src/coach/add.handler",
@@ -72,7 +85,7 @@ export function ApiStack({stack, app}: StackContext) {
              "POST /login": {
                  function:{
                      handler: "packages/api/src/coach/login.handler",
-                     bind: [PUBLIC_KEY]
+                     bind: [PRIVATE_KEY]
                  },
                  authorizer: "none"
              }
