@@ -1,4 +1,5 @@
 import type {DataSource} from "typeorm"
+import * as uuid from 'uuid'
 import {UserEntity} from "../entities/user.entity";
 import {CreateUserDto} from "../dto/coach/create.user.dto";
 
@@ -9,7 +10,6 @@ export class UserRepository {
 
 
     public async users() {
-
         try {
             await this.db.initialize()
             return  this.db.getRepository(UserEntity).find()
@@ -25,7 +25,10 @@ export class UserRepository {
     public async userById(id: string) {
         try {
             await this.db.initialize()
-            return this.db.getRepository(UserEntity).findOneBy( {id})
+            return this.db.getRepository(UserEntity)
+                .createQueryBuilder("user")
+                .where("user.id = CAST(:id AS UUID)", { id })
+                .getOne()
         }catch (err) {
             throw err
         }finally {
