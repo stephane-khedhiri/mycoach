@@ -10,6 +10,7 @@ export const connection = () => {
         database: RDS.Cluster.defaultDatabaseName,
         resourceArn: RDS.Cluster.clusterArn,
         secretArn: RDS.Cluster.secretArn,
+        uuidExtension: "uuid-ossp",
         entities,
         migrations,
     })
