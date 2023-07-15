@@ -6,12 +6,12 @@ import * as path from "path";
 export function ApiStack({stack, app}: StackContext) {
     // create database
     const cluster = new RDS(stack, "Cluster", {
-        engine: "postgresql11.13",
+        engine: "mysql5.7",
         defaultDatabaseName: "myCoach",
         scaling: {
             autoPause: true,
-            minCapacity: "ACU_2",
-            maxCapacity: "ACU_2",
+            minCapacity: "ACU_1",
+            maxCapacity: "ACU_1",
         }
     });
     // get variable in could
@@ -27,7 +27,7 @@ export function ApiStack({stack, app}: StackContext) {
                 responseTypes: ["simple"],
                 function: new Function(stack, "Authorizer", {
                     handler: "packages/api/src/auth.handler",
-                    bind: [PRIVATE_KEY, cluster],
+                    bind: [PUBLIC_KEY, cluster],
                     nodejs: {
                         esbuild: {
                             plugins: [
