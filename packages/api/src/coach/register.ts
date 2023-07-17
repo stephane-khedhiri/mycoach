@@ -7,40 +7,42 @@ import {UserRepository} from "@mycoach/core/src/repositories/";
 import {generatedToken} from "@mycoach/core/util/jwt";
 import {Config} from "sst/node/config";
 import {connection} from "@mycoach/core/connection";
-import {TokenProjection} from "@mycoach/core/projection/token.projection";
 import {responseToJson} from "@mycoach/core/response";
-
+import {DataProjection} from "@mycoach/core/projection";
 
 
 const datasource = connection()
 const userRepository = new UserRepository(datasource)
 
-export const handler = async (event: APIGatewayProxyEventV2 ) => {
+export const handler = async (event: APIGatewayProxyEventV2) => {
     try {
 
-        const createCoachDto = Object.assign(CreateUserDto, JSON.parse(event.body?? ''))
+        const createCoachDto = Object.assign(CreateUserDto, JSON.parse(event.body ?? ''))
 
         const errors = validateSync(createCoachDto);
 
-        if(errors.length > 0) {
+        if (errors.length > 0) {
             throw new UserBadRequest(errors)
         }
 
         const user = await userRepository.create(createCoachDto)
 
         return responseToJson(
-            {
-                ...plainToInstance(TokenProjection, {
-                    AccessToken: generatedToken({id: user.id, email: user.email}, Buffer.from(Config.PRIVATE_KEY, 'base64')),
-                })
-            },
-            200)
+            plainToInstance(
+                DataProjection,
+                {
+                    accessToken: generatedToken(
+                        {id: user.id, email: user.email},
+                        Buffer.from(Config.PRIVATE_KEY, 'base64')
+                    ),
+                    data: [user]
+                }), 200)
 
-    }catch (e: DomainError | any) {
+    } catch (e: DomainError | any) {
         if (e instanceof DomainError) {
             return responseToJson(e.toPlain(), e.code)
         }
-        return responseToJson(e.message(), 500)
+        return responseToJson(e.message, 500)
     }
 
 

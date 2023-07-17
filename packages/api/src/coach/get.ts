@@ -1,29 +1,34 @@
 import {
     APIGatewayProxyHandlerV2WithLambdaAuthorizer
 } from "aws-lambda";
-import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
+import {UserRepository} from "@mycoach/core/src/repositories/";
 import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
-import {plainToClass} from "class-transformer";
-import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
-import {UserPayloadWithJwt} from "@mycoach/core/types";
+import {plainToInstance} from "class-transformer";
+import {connection} from "@mycoach/core/connection";
+import {responseToJson} from "@mycoach/core/response";
+import {UserEntity} from "@mycoach/core/entities/user.entity";
+import {DataProjection} from "@mycoach/core/projection";
 
-export const handler:APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
+const datasource = connection()
+const userRepository = new UserRepository(datasource)
+
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user?: UserEntity, body?: string }> = async (event) => {
     try {
-
-
-        const coach = await new CoachRepository().findById(event.pathParameters?.id ?? '', true)
-        if (!coach) {
+        const user = await userRepository.userById(event.pathParameters?.id ?? '', ['id', 'email'])
+        if (!user) {
             throw new UserNotFound()
         }
-        return {
-            statusCode:200,
-            body: JSON.stringify(plainToClass(UserProjection, coach))
-        }
+        return responseToJson(
+            plainToInstance(
+                DataProjection,
+                {data: [user]},
+                {excludeExtraneousValues: true}
+            ), 200)
     } catch (e: DomainError | any) {
-        return {
-            statusCode:e.code,
-            body: e.toJson()
+        if (e instanceof DomainError) {
+            return responseToJson(e.toPlain(), e.code)
         }
+        return responseToJson(e.message, 500)
     }
 
 }

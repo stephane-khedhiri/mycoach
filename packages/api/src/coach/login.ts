@@ -3,14 +3,13 @@ import {LoginCoachDto} from "@mycoach/core/dto/coach/login.coach.dto";
 import {validateSync} from "class-validator";
 import {DomainError, UserBadRequest, UserNotFound} from "@mycoach/core/error/errors";
 import {UserRepository} from "@mycoach/core/repositories";
-import {plainToClass, plainToInstance} from "class-transformer";
-import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
+import {plainToInstance} from "class-transformer";
 import {Config} from "sst/node/config";
 import {generatedToken} from "@mycoach/core/util/jwt";
 import {comparePassword} from "@mycoach/core/util/password";
 import {connection} from "@mycoach/core/connection";
-import {TokenProjection} from "@mycoach/core/projection/token.projection";
 import {responseToJson} from "@mycoach/core/response";
+import {DataProjection} from "@mycoach/core/projection";
 
 const datasource = connection()
 const userRepository = new UserRepository(datasource)
@@ -32,17 +31,18 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
             throw new UserNotFound()
         }
         return responseToJson(
-            {
-                ...plainToInstance(TokenProjection, {
-                    AccessToken: generatedToken({id: user.id, email: user.email}, Config.PUBLIC_KEY),
-                })
-            },
-            200)
+            plainToInstance(DataProjection, {
+                AccessToken: generatedToken(
+                    {id: user.id, email: user.email},
+                    Buffer.from(Config.PRIVATE_KEY, 'base64')
+                ),
+                data: [user]
+            }), 200)
     } catch (e: DomainError | any) {
-        console.log(e)
-        const statusCode = e.code ?? 500
-        const body = typeof e.toJson === 'function' ? e.toJson() : e.message
-        return responseToJson(body, statusCode)
+        if (e instanceof DomainError) {
+            return responseToJson(e.toPlain(), e.code)
+        }
+        return responseToJson(e.message, 500)
 
     }
 }
