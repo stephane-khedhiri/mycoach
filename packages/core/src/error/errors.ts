@@ -4,15 +4,25 @@ import {constants} from 'http2'
 export type ErrorCode = 'UserApiErrors'
 
 export abstract class DomainError extends Error {
-    protected constructor(readonly code: number, message: string) {
+    protected constructor(public readonly type: string, readonly code: number, message: string) {
         super(message);
     }
-    abstract toJson(): string
+    toPlain() {
+        return {
+            type: this.type,
+            message: this.message,
+            code: this.code,
+            stack: process.env.IS_LOCAL ? this.stack : undefined
+        }
+    }
 }
 
 export abstract class ResourceNotFound extends DomainError {
     protected constructor(resource: string) {
-        super(constants.HTTP_STATUS_NOT_FOUND, `${resource} not found`);
+        super(
+            `${resource}NotFound`,
+            constants.HTTP_STATUS_NOT_FOUND,
+            `${resource} not found`);
     }
 }
 
@@ -31,7 +41,10 @@ export class UserNotFound extends ResourceNotFound {
 
 export abstract class BadRequest extends DomainError {
     protected constructor(message: string) {
-        super(constants.HTTP_STATUS_BAD_REQUEST, message);
+        super(
+            'BadRequest',
+            constants.HTTP_STATUS_BAD_REQUEST,
+            message);
     }
 }
 export class UserBadRequest extends BadRequest {
@@ -39,29 +52,23 @@ export class UserBadRequest extends BadRequest {
         super('UserInvalid');
     }
 
-    toJson(): string{
-        return JSON.stringify({
-            type: this.constructor.name,
-            message: this.message,
-            errors: this.MessageFormatter()
-        })
+    toPlain(){
+        return {
+            ...super.toPlain(),
+            errors: this.formatErrors(this.validationErrors)
+        }
     }
 
-    MessageFormatter(){
-        const errors = []
-        for(const validationError of this.validationErrors){
-            if(validationError.constraints){
-                for (const key in validationError.constraints){
-                    if(validationError.constraints[key]){
-                        errors.push({
-                            field: validationError.property,
-                            message: validationError.constraints[key]
-                        })
-                    }
-                }
+    formatErrors(errors: ValidationError[]) {
+        const formattedErrors: Record<string, string[]> = {};
+
+        errors.forEach((error: ValidationError) => {
+            if (error.constraints) {
+                formattedErrors[error.property] = Object.values(error.constraints || {});
             }
-        }
-        return errors
+        });
+
+        return formattedErrors;
     }
 }
 
@@ -69,11 +76,10 @@ export class UnAuthorized extends BadRequest {
     constructor() {
         super('UnAuthorized');
     }
-    toJson(): string {
-        return JSON.stringify({
-            type: this.constructor.name,
-            message: this.message
-        })
+    toPlain() {
+        return {
+            ...super.toPlain()
+        }
     }
 
 }
