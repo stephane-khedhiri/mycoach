@@ -1,2 +1,3 @@
 import {CoachRepository} from './coach.repositories'
-export {CoachRepository}
+import {OfferRepository} from './offer.repository'
+export {CoachRepository, OfferRepository}
