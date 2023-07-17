@@ -1,8 +1,7 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn, BeforeInsert} from "typeorm";
+import {Column, PrimaryGeneratedColumn, BeforeInsert, } from "typeorm";
 import {encodePassword} from '../util/password'
 
-@Entity('users')
-export class UserEntity extends BaseEntity {
+export abstract class UserEntity{
     @PrimaryGeneratedColumn('uuid')
     id: string
 
@@ -11,6 +10,8 @@ export class UserEntity extends BaseEntity {
 
     @Column()
     password: string
+
+
     @BeforeInsert()
     public hashPassword(): void {
         this.password = encodePassword(this.password);
