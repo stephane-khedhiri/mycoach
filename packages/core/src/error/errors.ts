@@ -71,7 +71,18 @@ export class UserBadRequest extends BadRequest {
     }
 }
 
+export class OfferBadRequest extends BadRequest {
+    constructor(readonly validationErrors: ValidationError[]) {
+        super('OfferInvalid');
+    }
 
+    toPlain(){
+        return {
+            ...super.toPlain(),
+            errors: this.formatErrors(this.validationErrors)
+        }
+    }
+}
 
 export class UnAuthorized extends BadRequest {
     constructor() {
