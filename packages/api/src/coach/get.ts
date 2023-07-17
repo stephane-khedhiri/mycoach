@@ -1,20 +1,20 @@
 import {
     APIGatewayProxyHandlerV2WithLambdaAuthorizer
 } from "aws-lambda";
-import {UserRepository} from "@mycoach/core/src/repositories/";
+import {CoachRepository} from "@mycoach/core/src/repositories/";
 import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
 import {plainToInstance} from "class-transformer";
 import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
-import {UserEntity} from "@mycoach/core/entities/user.entity";
+import type {UserEntityType} from "@mycoach/core/entities";
 import {DataProjection} from "@mycoach/core/projection";
 
 const datasource = connection()
-const userRepository = new UserRepository(datasource)
+const coachRepository = new CoachRepository(datasource)
 
-export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user?: UserEntity, body?: string }> = async (event) => {
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType}> = async (event) => {
     try {
-        const user = await userRepository.userById(event.pathParameters?.id ?? '', ['id', 'email'])
+        const user = await coachRepository.userById(event.pathParameters?.id ?? '', ['id', 'email'])
         if (!user) {
             throw new UserNotFound()
         }

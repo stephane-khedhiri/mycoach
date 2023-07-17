@@ -1,19 +1,19 @@
 import "reflect-metadata"
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
-import {UserRepository} from "@mycoach/core/repositories/user.repositories";
+import {CoachRepository} from "@mycoach/core/repositories/";
 import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
-import {UserEntity} from "@mycoach/core/entities/user.entity";
+import type {UserEntityType} from "@mycoach/core/entities/";
 import {DomainError} from "@mycoach/core/error/errors";
 import {plainToInstance} from "class-transformer"
 import {DataProjection} from "@mycoach/core/projection";
 
 const datasource = connection()
-const userRepository = new UserRepository(datasource)
-export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user?: UserEntity, body?: string }> = async (event) => {
+const coachRepository = new CoachRepository(datasource)
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType }> = async (event) => {
 
     try {
-        const users = await userRepository.users()
+        const users = await coachRepository.coachs()
         return responseToJson(
             plainToInstance(
                 DataProjection,
