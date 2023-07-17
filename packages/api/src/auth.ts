@@ -5,16 +5,16 @@ import {Config} from "sst/node/config"
 import {connection} from "@mycoach/core/connection";
 import {UserRepository} from "@mycoach/core/repositories/user.repositories";
 import {verifyTokenOrThrow} from "@mycoach/core/util/jwt";
-import {UserPayloadWithJwt} from "@mycoach/core/types";
-import {verify} from "jsonwebtoken"
-import {responseToJson} from "@mycoach/core/response";
-import {DomainError} from "@mycoach/core/error/errors";
+import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
+import type {UserEntityType} from "@mycoach/core/entities";
+
 
 
 const datasource = connection()
 const userRepository = new UserRepository(datasource)
 
-export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<UserPayloadWithJwt> = async (event) => {
+
+export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<{user?:UserEntityType}> = async (event) => {
     try {
         // get authorization
         const authHeader= event.headers?.authorization ?? ''
@@ -24,11 +24,13 @@ export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<User
             throw new Error()
         }
 
-        const userPayload =  await verifyTokenOrThrow(token, Config.PRIVATE_KEY)
+        const userPayload =  await verifyTokenOrThrow(token, Buffer.from(Config.PUBLIC_KEY, 'base64'))
 
         // check user in database
-        console.log(userPayload.id)
-        const user = await userRepository.userById(userPayload.id)
+        const user = await userRepository.userById(userPayload.id, ['id', 'email'])
+        if(!user){
+            throw new UserNotFound()
+        }
         return {
             isAuthorized: true,
             context: {
@@ -36,9 +38,10 @@ export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<User
             }
         }
     } catch (e: DomainError | any) {
-        const statusCode = e.code ?? 500
-        const body = typeof e.toJson === 'function' ? e.toJson() : e.message
-        return responseToJson(body, statusCode)
+        return {
+            isAuthorized: false,
+            context: {}
+        }
     }
 
 }
