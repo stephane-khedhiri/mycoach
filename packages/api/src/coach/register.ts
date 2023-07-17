@@ -4,11 +4,12 @@ import {APIGatewayProxyEventV2} from "aws-lambda";
 import {plainToInstance} from 'class-transformer';
 import {DomainError, UserBadRequest} from "@mycoach/core/error/errors";
 import {UserRepository} from "@mycoach/core/src/repositories/";
-import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
 import {generatedToken} from "@mycoach/core/util/jwt";
 import {Config} from "sst/node/config";
 import {connection} from "@mycoach/core/connection";
 import {TokenProjection} from "@mycoach/core/projection/token.projection";
+import {responseToJson} from "@mycoach/core/response";
+
 
 
 const datasource = connection()
@@ -27,17 +28,19 @@ export const handler = async (event: APIGatewayProxyEventV2 ) => {
 
         const user = await userRepository.create(createCoachDto)
 
-        const AccessToken = generatedToken({id: user.id, email: user.email}, Config.PRIVATE_KEY)
-        return {
-            statusCode: 200,
-            body: JSON.stringify(plainToInstance(TokenProjection, {AccessToken,data:[user]}))
-        }
+        return responseToJson(
+            {
+                ...plainToInstance(TokenProjection, {
+                    AccessToken: generatedToken({id: user.id, email: user.email}, Buffer.from(Config.PRIVATE_KEY, 'base64')),
+                })
+            },
+            200)
 
     }catch (e: DomainError | any) {
-        return {
-            statusCode: e.code ?? 500,
-            body: typeof e.toJson === 'function' ? e.toJson() : e.message
+        if (e instanceof DomainError) {
+            return responseToJson(e.toPlain(), e.code)
         }
+        return responseToJson(e.message(), 500)
     }
 
 

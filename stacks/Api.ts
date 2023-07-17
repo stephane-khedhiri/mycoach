@@ -71,7 +71,7 @@ export function ApiStack({stack, app}: StackContext) {
             //"GET /{id}": "packages/api/src/coach/get.handler",
             "POST /": {
                 function: {
-                    handler: "packages/api/src/coach/add.handler",
+                    handler: "packages/api/src/coach/register.handler",
                     bind: [PRIVATE_KEY]
                 },
                 authorizer: "none",
