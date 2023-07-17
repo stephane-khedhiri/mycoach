@@ -8,7 +8,7 @@ export class CoachRepository {
     constructor(private readonly db: DataSource ) {}
 
 
-    public async users(selects?: SelectQueryBuilder<CoachEntity>['selects']) {
+    public async coachs(selects?: SelectQueryBuilder<CoachEntity>['selects']) {
 
         try {
             await this.db.initialize()
