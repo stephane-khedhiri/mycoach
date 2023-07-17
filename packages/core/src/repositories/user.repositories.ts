@@ -8,10 +8,13 @@ export class UserRepository {
     constructor(private readonly db: DataSource ) {}
 
 
-    public async users() {
+    public async users(selects: SelectQueryBuilder<UserEntity>['selects']) {
         try {
             await this.db.initialize()
-            return  this.db.getRepository(UserEntity).find()
+            return  this.db.getRepository(UserEntity)
+                .createQueryBuilder('user')
+                .select(selects.map(select => `user.${select}`))
+                .getMany()
         }catch (err) {
             throw err
         }finally {
