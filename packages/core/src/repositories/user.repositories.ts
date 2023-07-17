@@ -1,7 +1,6 @@
-import type {DataSource} from "typeorm"
+import type {DataSource, SelectQueryBuilder} from "typeorm"
 import {UserEntity} from "../entities/user.entity";
 import {CreateUserDto} from "../dto/coach/create.user.dto";
-import {UpdateCoachDto} from "../dto/coach/update.coach.dto";
 
 
 
@@ -22,13 +21,13 @@ export class UserRepository {
         }
     }
 
-    public async userById(id: string, selects: string[]| string) {
+    public async userById(id: string, selects: SelectQueryBuilder<UserEntity>['selects']) {
         try {
             await this.db.initialize()
             return this.db.getRepository(UserEntity)
                 .createQueryBuilder("user")
-                .select([...selects])
-                .where("user.id = CAST(:id AS UUID)", { id })
+                .select(selects.map(select => `user.${select}`)) // add query builder "user" exemple return user.id
+                .where("user.id = :id", { id })
                 .getOne()
         }catch (err) {
             throw err
