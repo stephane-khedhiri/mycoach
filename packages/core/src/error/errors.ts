@@ -46,19 +46,6 @@ export abstract class BadRequest extends DomainError {
             constants.HTTP_STATUS_BAD_REQUEST,
             message);
     }
-}
-export class UserBadRequest extends BadRequest {
-    constructor(readonly validationErrors: ValidationError[]) {
-        super('UserInvalid');
-    }
-
-    toPlain(){
-        return {
-            ...super.toPlain(),
-            errors: this.formatErrors(this.validationErrors)
-        }
-    }
-
     formatErrors(errors: ValidationError[]) {
         const formattedErrors: Record<string, string[]> = {};
 
@@ -71,6 +58,20 @@ export class UserBadRequest extends BadRequest {
         return formattedErrors;
     }
 }
+export class UserBadRequest extends BadRequest {
+    constructor(readonly validationErrors: ValidationError[]) {
+        super('UserInvalid');
+    }
+
+    toPlain(){
+        return {
+            ...super.toPlain(),
+            errors: this.formatErrors(this.validationErrors)
+        }
+    }
+}
+
+
 
 export class UnAuthorized extends BadRequest {
     constructor() {
