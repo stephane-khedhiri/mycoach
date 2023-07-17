@@ -68,7 +68,7 @@ export function ApiStack({stack, app}: StackContext) {
         },
         routes: {
             "GET /": "packages/api/src/coach/list.handler",
-            //"GET /{id}": "packages/api/src/coach/get.handler",
+            "GET /{id}": "packages/api/src/coach/get.handler",
             "POST /": {
                 function: {
                     handler: "packages/api/src/coach/register.handler",
@@ -76,25 +76,25 @@ export function ApiStack({stack, app}: StackContext) {
                 },
                 authorizer: "none",
             },
-            // "PUT /": {
-            //     function:{
-            //         handler: "packages/api/src/coach/update.handler",
-            //         bind: [PRIVATE_KEY]
-            //     }
-            // },
-             "POST /login": {
-                 function:{
-                     handler: "packages/api/src/coach/login.handler",
-                     bind: [PRIVATE_KEY]
-                 },
-                 authorizer: "none"
-             }
+            "PUT /": {
+                function: {
+                    handler: "packages/api/src/coach/update.handler",
+                    bind: [PRIVATE_KEY]
+                }
+            },
+            "POST /login": {
+                function: {
+                    handler: "packages/api/src/coach/login.handler",
+                    bind: [PRIVATE_KEY]
+                },
+                authorizer: "none"
+            }
         },
 
     });
 
     // create fixture lambda
-    if (app.mode === 'dev') {
+    if (app.stage !== 'prod') {
         const fixture = new Function(stack, 'fixture', {
             handler: 'packages/api/src/fixture.load',
             bind: [cluster],
@@ -114,10 +114,12 @@ export function ApiStack({stack, app}: StackContext) {
                 }
             }
         })
-        new Script(stack, 'fixtureLoad', {
-            version: '1',
-            onCreate: fixture
-        })
+        if (app.mode !== 'dev') {
+            new Script(stack, 'fixtureLoad', {
+                version: '1',
+                onCreate: fixture
+            })
+        }
     }
 // Show the API endpoint in the output
     stack.addOutputs({
