@@ -83,11 +83,12 @@ export class CoachRepository {
             }
         }
     }
-    public async update(coach: CoachEntity){
+    public async update(id: string, data: Partial<CoachEntity>){
         try{
+
             await this.db.initialize()
-            const userEntity = this.db.getRepository(CoachEntity).create(coach)
-            return this.db.getRepository(CoachEntity).save(userEntity)
+            const coach = this.db.getRepository(CoachEntity).findOne({where: {id}})
+            return this.db.getRepository(CoachEntity).save(Object.assign(coach, data))
         }catch (err){
             throw err
         }finally {
