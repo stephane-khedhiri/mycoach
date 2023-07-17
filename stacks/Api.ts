@@ -20,7 +20,6 @@ export function ApiStack({stack, app}: StackContext) {
 
     // create Api
     const api = new Api(stack, "Api", {
-        // create authorizers
         authorizers: {
             myAuth: {
                 type: "lambda",
@@ -90,8 +89,8 @@ export function ApiStack({stack, app}: StackContext) {
                 },
                 authorizer: "none"
             },
-            // route offer
-            "POST offer/": "packages/api/src/offer/register.handler"
+
+            "POST /offer": "packages/api/src/offer/register.handler"
         },
 
     });
