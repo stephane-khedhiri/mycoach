@@ -2,14 +2,13 @@ import {JwtPayload, sign, verify} from "jsonwebtoken"
 import {UnAuthorized} from "../error/errors";
 
 
-export const generatedToken = (payload: object, privateKey: Buffer |string) => {
-
+export const generatedToken = (payload: object, privateKey: Buffer | string) => {
     return sign(
         {...payload},
-        typeof privateKey === 'string'? privateKey: privateKey.toString('utf-8'),
+        typeof privateKey === 'string'? privateKey : privateKey.toString('utf-8'),
         {
             algorithm: "RS256",
-            expiresIn: '1h', // 15m
+            expiresIn: '1h'
         })
 }
 export const verifyTokenOrThrow = (token: string, publicKey: Buffer | string): Promise<JwtPayload> => {
