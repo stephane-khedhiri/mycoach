@@ -67,6 +67,7 @@ export function ApiStack({stack, app}: StackContext) {
             authorizer: 'myAuth',
         },
         routes: {
+            // route coach
             "GET /": "packages/api/src/coach/list.handler",
             "GET /{id}": "packages/api/src/coach/get.handler",
             "POST /": {
@@ -88,7 +89,9 @@ export function ApiStack({stack, app}: StackContext) {
                     bind: [PRIVATE_KEY]
                 },
                 authorizer: "none"
-            }
+            },
+            // route offer
+            "POST offer/": "packages/api/src/offer/register.handler"
         },
 
     });
