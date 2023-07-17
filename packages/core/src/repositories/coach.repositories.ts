@@ -1,25 +1,25 @@
 import type {DataSource, SelectQueryBuilder} from "typeorm"
-import {UserEntity} from "../entities/user.entity";
-import {CreateUserDto} from "../dto/coach/create.user.dto";
+import {CoachEntity} from "../entities/coach.entity";
+import {CreateCoachDto} from "../dto/coach/create.coach.dto";
 
 
 
-export class UserRepository {
+export class CoachRepository {
     constructor(private readonly db: DataSource ) {}
 
 
-    public async users(selects?: SelectQueryBuilder<UserEntity>['selects']) {
+    public async users(selects?: SelectQueryBuilder<CoachEntity>['selects']) {
 
         try {
             await this.db.initialize()
             if(!selects){
-                return  this.db.getRepository(UserEntity)
-                    .createQueryBuilder('user')
+                return  this.db.getRepository(CoachEntity)
+                    .createQueryBuilder('coach')
                     .getMany()
             }
-            return  this.db.getRepository(UserEntity)
+            return  this.db.getRepository(CoachEntity)
                 .createQueryBuilder('user')
-                .select(selects.map(select => `user.${select}`))
+                .select(selects.map(select => `coach.${select}`))
                 .getMany()
         }catch (err) {
             throw err
@@ -30,13 +30,13 @@ export class UserRepository {
         }
     }
 
-    public async userById(id: string, selects: SelectQueryBuilder<UserEntity>['selects']) {
+    public async userById(id: string, selects: SelectQueryBuilder<CoachEntity>['selects']) {
         try {
             await this.db.initialize()
-            return this.db.getRepository(UserEntity)
-                .createQueryBuilder("user")
-                .select(selects.map(select => `user.${select}`)) // add query builder "user" exemple return user.id
-                .where("user.id = :id", { id })
+            return this.db.getRepository(CoachEntity)
+                .createQueryBuilder("coach")
+                .select(selects.map(select => `coach.${select}`)) // add query builder "user" exemple return user.id
+                .where("coach.id = :id", { id })
                 .getOne()
         }catch (err) {
             throw err
@@ -49,7 +49,7 @@ export class UserRepository {
     public async userByEmail(email: string) {
         try {
             await this.db.initialize()
-            return this.db.getRepository(UserEntity).findOneBy( {email: email})
+            return this.db.getRepository(CoachEntity).findOneBy( {email: email})
         }catch (err) {
             throw err
         }finally {
@@ -62,7 +62,7 @@ export class UserRepository {
     public async existByEmail(email: string) {
         try {
             await this.db.initialize()
-            return await this.db.getRepository(UserEntity).createQueryBuilder('c').where('c.email = :email', {email}).getCount()
+            return await this.db.getRepository(CoachEntity).createQueryBuilder('c').where('c.email = :email', {email}).getCount()
         }catch (err) {}
         finally {
             if(this.db.isInitialized){
@@ -70,11 +70,11 @@ export class UserRepository {
             }
         }
     }
-    public async create(user: CreateUserDto){
+    public async create(coach: CreateCoachDto){
         try {
             await this.db.initialize()
-            const userEntity = this.db.getRepository(UserEntity).create(user)
-            return  this.db.getRepository(UserEntity).save(userEntity)
+            const userEntity = this.db.getRepository(CoachEntity).create(coach)
+            return  this.db.getRepository(CoachEntity).save(userEntity)
         }catch (err) {
             throw err
         }finally {
@@ -83,11 +83,11 @@ export class UserRepository {
             }
         }
     }
-    public async update(user: UserEntity){
+    public async update(coach: CoachEntity){
         try{
             await this.db.initialize()
-            const userEntity = this.db.getRepository(UserEntity).create(user)
-            return this.db.getRepository(UserEntity).save(userEntity)
+            const userEntity = this.db.getRepository(CoachEntity).create(coach)
+            return this.db.getRepository(CoachEntity).save(userEntity)
         }catch (err){
             throw err
         }finally {
