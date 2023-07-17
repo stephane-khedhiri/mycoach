@@ -31,4 +31,15 @@ export class OfferRepository {
             }
         }
     }
+    public async createByCoach(coachId: string, offer: Partial<OfferEntity>){
+        try{
+            await this.db.initialize()
+            return this.db.getRepository(OfferEntity).save(Object.assign(offer, coachId))
+        }catch (e) {
+        }finally {
+            if(this.db.isInitialized){
+                await this.db.destroy()
+            }
+        }
+    }
 }
