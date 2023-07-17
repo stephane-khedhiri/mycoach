@@ -1,9 +1,9 @@
-import {Exclude} from 'class-transformer'
+import {Expose} from 'class-transformer'
 
 export class UserProjection {
+    @Expose()
     id: string
+    @Expose()
     email: string
-
-    @Exclude()
     password: string
 }
