@@ -3,7 +3,7 @@ import {
 } from "aws-lambda";
 import {Config} from "sst/node/config"
 import {connection} from "@mycoach/core/connection";
-import {UserRepository} from "@mycoach/core/repositories/user.repositories";
+import {CoachRepository} from "@mycoach/core/repositories/";
 import {verifyTokenOrThrow} from "@mycoach/core/util/jwt";
 import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
 import type {UserEntityType} from "@mycoach/core/entities";
@@ -11,7 +11,7 @@ import type {UserEntityType} from "@mycoach/core/entities";
 
 
 const datasource = connection()
-const userRepository = new UserRepository(datasource)
+const coachRepository = new CoachRepository(datasource)
 
 
 export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<{user?:UserEntityType}> = async (event) => {
@@ -27,7 +27,7 @@ export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<{use
         const userPayload =  await verifyTokenOrThrow(token, Buffer.from(Config.PUBLIC_KEY, 'base64'))
 
         // check user in database
-        const user = await userRepository.userById(userPayload.id, ['id', 'email'])
+        const user = await coachRepository.userById(userPayload.id, ['id', 'email'])
         if(!user){
             throw new UserNotFound()
         }
