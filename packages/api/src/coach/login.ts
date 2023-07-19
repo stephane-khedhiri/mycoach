@@ -15,7 +15,7 @@ const datasource = connection()
 const coachRepository = new CoachRepository(datasource)
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try {
-        const loginCoachDto = Object.assign(LoginCoachDto, JSON.parse(event.body ?? ''))
+        const loginCoachDto = plainToInstance(LoginCoachDto, JSON.parse(event.body ?? ''))
         const errors = validateSync(loginCoachDto)
         if (errors.length > 0) {
             throw new UserBadRequest(errors)

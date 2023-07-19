@@ -20,7 +20,7 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{user:UserEnt
             throw new UnAuthorized()
         }
 
-        const updateCoachDto = Object.assign(UpdateCoachDto, JSON.parse(event.body??''),)
+        const updateCoachDto = plainToInstance(UpdateCoachDto, JSON.parse(event.body??''),)
         const errors = validateSync(updateCoachDto)
 
         if(errors.length > 0){

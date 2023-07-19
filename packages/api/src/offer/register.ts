@@ -15,13 +15,13 @@ const offerRepository = new OfferRepository(datasource)
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType }> = async (event) => {
     try {
 
-        const createOfferDto = Object.assign(CreateOfferDto, JSON.parse(event.body ?? ''))
-
+        const createOfferDto = plainToInstance(CreateOfferDto, JSON.parse(event.body ?? ''))
         const errors = validateSync(createOfferDto);
 
         if (errors.length > 0) {
             throw new OfferBadRequest(errors)
         }
+
 
         const offer = await offerRepository.createByCoach(event.requestContext.authorizer.lambda.user.id, createOfferDto)
         const userWithOffer = plainToInstance(
