@@ -2,7 +2,7 @@ import {IsString, IsNotEmpty, IsNumber} from 'class-validator'
 export class CreateOfferDto {
     @IsString()
     @IsNotEmpty({message: ({property}) =>  `${property} is required` })
-    readonly name: string
+    readonly title: string
 
     @IsNumber()
     @IsNotEmpty({message: ({property}) =>  `${property} is required` })
