@@ -55,26 +55,6 @@ export class OfferRepository {
         }
     }
 
-    public async offerByCoachAndById(coachId: string, offerId: string, selects?: SelectQueryBuilder<OfferEntity>['selects']) {
-        try {
-
-            await this.db.initialize()
-            return this.db.getRepository(OfferEntity)
-                .createQueryBuilder()
-                .select()
-                .where('id = :offerId', {offerId})
-                .andWhere('coachId = :coachId', {coachId})
-                .getRawOne()
-
-        } catch (e) {
-            throw  e
-        } finally {
-            if (this.db.isInitialized) {
-                await this.db.destroy()
-            }
-        }
-    }
-
     public async update(coachId: string, offerId: string, updateOffer: Partial<OfferEntity>) {
         try {
             await this.db.initialize()
