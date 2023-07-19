@@ -4,15 +4,15 @@ import {
     ValidationArguments,
     ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface,
 } from "class-validator";
-import {UserRepository} from "../repositories/";
+import {CoachRepository} from "../repositories/";
 import {connection} from "../connection";
 
 const datasource = connection()
-const userRepository = new UserRepository(datasource)
+const coachRepository = new CoachRepository(datasource)
 @ValidatorConstraint()
 export class UniqueOnDatabaseExistConstraint implements ValidatorConstraintInterface {
     validate(value: any, args: ValidationArguments) {
-        return userRepository.existByEmail(value).then((exist) => !exist)
+        return coachRepository.existByEmail(value).then((exist) => !exist)
     }
     defaultMessage(args: ValidationArguments) {
         return `${args.property} already exists`; // Message d'erreur personnalisé
