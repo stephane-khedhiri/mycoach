@@ -30,13 +30,14 @@ export class UserNotFound extends ResourceNotFound {
     constructor() {
         super('User');
     }
-    toJson(): string {
-        return JSON.stringify({
-            type: this.constructor.name,
-            message: this.message
-        })
-    }
 
+
+}
+
+export class OfferNotFound extends ResourceNotFound{
+    constructor() {
+        super('Offer');
+    }
 }
 
 export abstract class BadRequest extends DomainError {
