@@ -8,6 +8,7 @@ import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
 import {DataProjection, UserProjection} from "@mycoach/core/projection";
 import {UserEntityType} from "@mycoach/core/entities";
+import {OfferProjection} from "@mycoach/core/projection/offer.projection";
 
 const datasource = connection()
 const offerRepository = new OfferRepository(datasource)
@@ -24,21 +25,12 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserE
 
 
         const offer = await offerRepository.createByCoach(event.requestContext.authorizer.lambda.user.id, createOfferDto)
-        const userWithOffer = plainToInstance(
-            UserProjection,
-            {
-                ...event.requestContext.authorizer.lambda.user,
-                offer: [offer]
-            }
-        )
         return responseToJson(
-            plainToInstance(
-                DataProjection,
-                {
-                    data: [userWithOffer]
-                },
-                {excludeExtraneousValues: true}
-            ),
+            {data: [plainToInstance(
+                    OfferProjection,
+                    {...offer},
+                    {excludeExtraneousValues: true}
+                )]},
             200)
 
     } catch (e: DomainError | any) {
