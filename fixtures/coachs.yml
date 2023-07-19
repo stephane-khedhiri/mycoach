@@ -1,0 +1,16 @@
+entity: CoachEntity
+items:
+  admin:
+    firstName: 'admin'
+    lastName: 'admin'
+    email: 'admin@admin.com'
+    password: 'admin'
+  coach{1..10}:
+    firstName: '{{person.firstName}}'
+    lastName: '{{person.lastName}}'
+    email: '{{internet.email}}'
+    password: '{{internet.password}}'
+
+
+
+

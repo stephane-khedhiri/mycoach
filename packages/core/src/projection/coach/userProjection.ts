@@ -1,12 +1,12 @@
-import {Expose} from 'class-transformer'
+import {Expose, Type} from 'class-transformer'
+import {OfferProjection} from "../offer.projection";
 
 export class UserProjection {
     id: string
+    @Expose()
     email: string
-
-
     password: string
-    createdAt: Date
-
-
+    @Expose()
+    @Type(() => OfferProjection)
+    offers: OfferProjection[]
 }

@@ -1,23 +1,30 @@
 import "reflect-metadata"
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
-import {UserRepository} from "@mycoach/core/repositories/user.repositories";
-import {UserPayloadWithJwt} from "@mycoach/core/types";
+import {CoachRepository} from "@mycoach/core/repositories/";
+import {connection} from "@mycoach/core/connection";
+import {responseToJson} from "@mycoach/core/response";
+import type {UserEntityType} from "@mycoach/core/entities/";
+import {DomainError} from "@mycoach/core/error/errors";
+import {plainToInstance} from "class-transformer"
+import {DataProjection} from "@mycoach/core/projection";
 
-export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<UserPayloadWithJwt> = async (event) => {
+const datasource = connection()
+const coachRepository = new CoachRepository(datasource)
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType }> = async (event) => {
+
     try {
-        const coachs = await new UserRepository().all()
-        return {
-            statusCode: 200,
-            body: JSON.stringify(coachs)
+        const users = await coachRepository.coachs()
+        return responseToJson(
+            plainToInstance(
+                DataProjection,
+                {data: users},
+                {excludeExtraneousValues: true}
+            ), 200)
+    } catch (e: any) {
+        if (e instanceof DomainError) {
+            return responseToJson(e.toPlain(), e.code)
         }
-    }catch (e: any) {
-        return {
-            statusCode:500,
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(e.message)
-        }
+        return responseToJson(e.message, 500)
     }
 
 }

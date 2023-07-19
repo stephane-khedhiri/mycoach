@@ -1,0 +1,8 @@
+entity: OfferEntity
+items:
+  offer{1..3}:
+      title: 'offer($current)'
+      price: '{{commerce.price}}'
+      description: 'description($current)'
+      coach: '@coach($current)'
+

@@ -1,17 +1,17 @@
-import {Api, RDS, StackContext, Function, Config} from "sst/constructs";
+import {Api, RDS, StackContext, Function, Config, Script} from "sst/constructs";
 import {esbuildDecorators} from "@anatine/esbuild-decorators";
 import * as path from "path";
 
 
-export function ApiStack({stack}: StackContext) {
+export function ApiStack({stack, app}: StackContext) {
     // create database
     const cluster = new RDS(stack, "Cluster", {
-        engine: "postgresql11.13",
+        engine: "mysql5.7",
         defaultDatabaseName: "myCoach",
         scaling: {
             autoPause: true,
-            minCapacity: "ACU_2",
-            maxCapacity: "ACU_2",
+            minCapacity: "ACU_1",
+            maxCapacity: "ACU_1",
         }
     });
     // get variable in could
@@ -20,14 +20,26 @@ export function ApiStack({stack}: StackContext) {
 
     // create Api
     const api = new Api(stack, "Api", {
-        // create authorizers
         authorizers: {
             myAuth: {
                 type: "lambda",
                 responseTypes: ["simple"],
                 function: new Function(stack, "Authorizer", {
-                    handler: "packages/api/src/lambda/coach/auth.handler",
-                    bind: [PUBLIC_KEY]
+                    handler: "packages/api/src/auth.handler",
+                    bind: [PUBLIC_KEY, cluster],
+                    nodejs: {
+                        esbuild: {
+                            plugins: [
+                                // @ts-ignore
+                                esbuildDecorators({
+                                    tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                                }),
+                            ],
+                        },
+                        external: [
+                            'pg-native',
+                        ]
+                    },
                 }),
                 resultsCacheTtl: '5 second'
             }
@@ -41,7 +53,7 @@ export function ApiStack({stack}: StackContext) {
                         plugins: [
                             // @ts-ignore
                             esbuildDecorators({
-                                tsconfig: path.join(process.cwd(), 'packages/functions/tsconfig.json')
+                                tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
                             }),
                         ],
                     },
@@ -51,34 +63,66 @@ export function ApiStack({stack}: StackContext) {
                 },
 
             },
-            //authorizer: 'myAuth',
+            authorizer: 'myAuth',
         },
         routes: {
+            // route coach
             "GET /": "packages/api/src/coach/list.handler",
-            // "GET /{id}": "packages/api/src/coach/get.handler",
-            // "POST /": {
-            //     function : {
-            //         handler: "packages/api/src/coach/add.handler",
-            //         bind: [PRIVATE_KEY]
-            //     },
-            //     authorizer: "none",
-            // },
-            // "PUT /": {
-            //     function:{
-            //         handler: "packages/api/src/coach/update.handler",
-            //         bind: [PRIVATE_KEY]
-            //     }
-            // },
-            // "POST /login": {
-            //     function:{
-            //         handler: "packages/api/src/coach/login.handler",
-            //         bind: [PUBLIC_KEY]
-            //     },
-            //     authorizer: "none"
-            // }
+            "GET /{id}": "packages/api/src/coach/get.handler",
+            "POST /": {
+                function: {
+                    handler: "packages/api/src/coach/register.handler",
+                    bind: [PRIVATE_KEY]
+                },
+                authorizer: "none",
+            },
+            "PUT /": {
+                function: {
+                    handler: "packages/api/src/coach/update.handler",
+                    bind: [PRIVATE_KEY]
+                }
+            },
+            "POST /login": {
+                function: {
+                    handler: "packages/api/src/coach/login.handler",
+                    bind: [PRIVATE_KEY]
+                },
+                authorizer: "none"
+            },
+
+            "POST /offer": "packages/api/src/offer/register.handler"
         },
 
     });
+
+    // create fixture lambda
+    if (app.stage !== 'prod') {
+        const fixture = new Function(stack, 'fixture', {
+            handler: 'packages/api/src/fixture.load',
+            bind: [cluster],
+            enableLiveDev: false,
+            copyFiles: [{from: 'fixtures', to: 'packages/api/src/fixtures'}],
+            nodejs: {
+                esbuild: {
+                    plugins: [
+                        // @ts-ignore
+                        esbuildDecorators({
+                            tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                        }),
+                    ],
+                    external: [
+                        'pg-native',
+                    ]
+                }
+            }
+        })
+        if (app.mode !== 'dev') {
+            new Script(stack, 'fixtureLoad', {
+                version: '1',
+                onCreate: fixture
+            })
+        }
+    }
 // Show the API endpoint in the output
     stack.addOutputs({
         RDSEndpoint: cluster.clusterEndpoint.socketAddress,

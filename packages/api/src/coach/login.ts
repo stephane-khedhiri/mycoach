@@ -2,39 +2,49 @@ import {APIGatewayProxyHandlerV2} from "aws-lambda";
 import {LoginCoachDto} from "@mycoach/core/dto/coach/login.coach.dto";
 import {validateSync} from "class-validator";
 import {DomainError, UserBadRequest, UserNotFound} from "@mycoach/core/error/errors";
-import {CoachRepository} from "../../../../core/src/repositories/coach.repositories";
-import {plainToClass} from "class-transformer";
-import {UserProjection} from "@mycoach/core/projection/coach/userProjection";
+import {CoachRepository} from "@mycoach/core/repositories";
+import {plainToInstance} from "class-transformer";
 import {Config} from "sst/node/config";
 import {generatedToken} from "@mycoach/core/util/jwt";
 import {comparePassword} from "@mycoach/core/util/password";
+import {connection} from "@mycoach/core/connection";
+import {responseToJson} from "@mycoach/core/response";
+import {DataProjection} from "@mycoach/core/projection";
 
+const datasource = connection()
+const coachRepository = new CoachRepository(datasource)
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
-    try{
-        const loginCoachDto = Object.assign(new LoginCoachDto(), JSON.parse(event.body?? ''))
+    try {
+        const loginCoachDto = plainToInstance(LoginCoachDto, JSON.parse(event.body ?? ''))
         const errors = validateSync(loginCoachDto)
-        if(errors.length > 0) {
+        if (errors.length > 0) {
             throw new UserBadRequest(errors)
         }
-        const coach = await new CoachRepository().findByEmail(loginCoachDto.email)
-        // verification du mdp
-        if(!coach){
+        const user = await coachRepository.userByEmail(loginCoachDto.email)
+
+        if (!user) {
+            throw new UserNotFound()
+
+        }
+
+        if (!comparePassword(loginCoachDto.password, user.password)) {
             throw new UserNotFound()
         }
-        if(comparePassword(loginCoachDto.password, coach.password as string) ){
-            throw new UserNotFound()
+        return responseToJson(
+            plainToInstance(DataProjection, {
+                accessToken: generatedToken(
+                    {id: user.id, email: user.email},
+                    Buffer.from(Config.PRIVATE_KEY, 'base64')
+                ),
+                data: [user]
+            }
+            ,{excludeExtraneousValues: true})
+            ,200)
+    } catch (e: DomainError | any) {
+        if (e instanceof DomainError) {
+            return responseToJson(e.toPlain(), e.code)
         }
-        return {
-            statusCode:200,
-            body: JSON.stringify({
-                ...plainToClass(UserProjection, coach),
-                accessToken: generatedToken({id: coach.id, email:coach.email}, Config.PUBLIC_KEY)
-            })
-        }
-    }catch (e: DomainError| any) {
-        return {
-            statusCode:e.code??500,
-            body:  e.message,
-        }
+        return responseToJson(e.message, 500)
+
     }
 }

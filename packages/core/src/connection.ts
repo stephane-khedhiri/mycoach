@@ -5,11 +5,11 @@ import {migrations} from "./migrations";
 
 export const connection = () => {
     return new DataSource({
-        type: 'aurora-postgres',
+        type: 'aurora-mysql',
         region: process.env.AWS_REGION as string,
-        database: RDS.cluster.defaultDatabaseName,
-        resourceArn: RDS.cluster.clusterArn,
-        secretArn: RDS.cluster.secretArn,
+        database: RDS.Cluster.defaultDatabaseName,
+        resourceArn: RDS.Cluster.clusterArn,
+        secretArn: RDS.Cluster.secretArn,
         entities,
         migrations,
     })
