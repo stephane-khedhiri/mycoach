@@ -1,12 +1,15 @@
-import {Expose} from 'class-transformer'
+import {Expose, Type} from 'class-transformer'
+import {UserProjection} from "./coach/userProjection";
 export class OfferProjection {
     @Expose()
-    id?: string
+    id: string
 
     @Expose()
-    name?: string
+    title: string
 
     @Expose()
-    description?: string
+    description: string
 
+    @Expose()
+    price: number
 }
