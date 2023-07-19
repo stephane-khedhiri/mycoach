@@ -90,7 +90,8 @@ export function ApiStack({stack, app}: StackContext) {
                 authorizer: "none"
             },
 
-            "POST /offer": "packages/api/src/offer/register.handler"
+            "POST /offer": "packages/api/src/offer/register.handler",
+            "PUT /offer/{id}": "packages/api/src/offer/update.handler",
         },
 
     });
