@@ -7,9 +7,9 @@ export class OfferEntity{
     id: string
 
     @Column()
-    name: string
+    title: string
 
-    @Column()
+    @Column('decimal', {precision:10, scale: 2})
     price: number
 
     @Column()
