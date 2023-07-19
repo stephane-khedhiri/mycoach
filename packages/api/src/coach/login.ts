@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
         }
         return responseToJson(
             plainToInstance(DataProjection, {
-                AccessToken: generatedToken(
+                accessToken: generatedToken(
                     {id: user.id, email: user.email},
                     Buffer.from(Config.PRIVATE_KEY, 'base64')
                 ),
