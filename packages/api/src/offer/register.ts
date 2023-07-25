@@ -6,7 +6,6 @@ import {DomainError, OfferBadRequest} from "@mycoach/core/error/errors";
 import {OfferRepository} from "@mycoach/core/src/repositories/";
 import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
-import {DataProjection, UserProjection} from "@mycoach/core/projection";
 import {UserEntityType} from "@mycoach/core/entities";
 import {OfferProjection} from "@mycoach/core/projection/offer.projection";
 
@@ -39,6 +38,4 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserE
         }
         return responseToJson(e.message, 500)
     }
-
-
 }
