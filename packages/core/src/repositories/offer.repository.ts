@@ -1,12 +1,33 @@
 import {DataSource, SelectQueryBuilder} from "typeorm";
 import {OfferEntity} from "../entities/offer.entity";
 import {CoachEntity} from "../entities/coach.entity"
-import {OfferNotFound, UnAuthorized} from "../error/errors";
+import {OfferNotFound} from "../error/errors";
 
 export class OfferRepository {
-    constructor(private readonly db: DataSource) {
-    }
+    constructor(private readonly db: DataSource) {}
 
+    // get all offers
+    public async offers(selects?: SelectQueryBuilder<OfferEntity>['selects']) {
+        try {
+            await this.db.initialize()
+            if(!selects){
+                return this.db.getRepository(OfferEntity)
+                    .createQueryBuilder('offer')
+                    .select()
+                    .getMany()
+            }
+            return this.db.getRepository(OfferEntity)
+                .createQueryBuilder('offer')
+                .select(selects.map(select => `offer.${select}`))
+                .getMany()
+        }catch (e) {
+
+        }finally {
+            if(this.db.isInitialized){
+               await this.db.destroy()
+            }
+        }
+    }
     public async offersByCoach(coachId: string) {
         try {
             await this.db.initialize()
@@ -22,21 +43,10 @@ export class OfferRepository {
         }
     }
 
-    public async offerById(id: string) {
-        try {
-            await this.db.initialize()
-            return this.db.getRepository(OfferEntity)
-                .createQueryBuilder('offer')
-                .where('offer.id = :id', {id})
-                .getMany()
-        } catch (e) {
-        } finally {
-            if (this.db.isInitialized) {
-                await this.db.destroy()
-            }
-        }
-    }
+    // get offers by id
 
+
+    // create offers
     public async createByCoach(coachId: string, data: Partial<OfferEntity>) {
         try {
             await this.db.initialize()
@@ -54,7 +64,7 @@ export class OfferRepository {
             }
         }
     }
-
+    // update offers
     public async update(coachId: string, offerId: string, updateOffer: Partial<OfferEntity>) {
         try {
             await this.db.initialize()

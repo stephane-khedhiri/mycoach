@@ -89,9 +89,15 @@ export function ApiStack({stack, app}: StackContext) {
                 },
                 authorizer: "none"
             },
-
-            "POST /offer": "packages/api/src/offer/register.handler",
-            "PUT /offer/{id}": "packages/api/src/offer/update.handler",
+            //offers
+            "POST /offers": "packages/api/src/offer/register.handler",
+            "PUT /offers/{id}": "packages/api/src/offer/update.handler",
+            "GET /offers": {
+                function :{
+                    handler: "packages/api/src/offer/offers.handler"
+                },
+                authorizer: "none"
+            },
         },
 
     });
