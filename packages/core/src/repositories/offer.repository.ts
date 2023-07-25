@@ -2,6 +2,7 @@ import {DataSource, SelectQueryBuilder} from "typeorm";
 import {OfferEntity} from "../entities/offer.entity";
 import {CoachEntity} from "../entities/coach.entity"
 import {OfferNotFound} from "../error/errors";
+import {CreateOfferDto} from "../dto/offer/create.offer.dto";
 
 export class OfferRepository {
     constructor(private readonly db: DataSource) {}
@@ -69,7 +70,7 @@ export class OfferRepository {
     }
 
     // create offers
-    public async createByCoach(coachId: string, data: Partial<OfferEntity>) {
+    public async createByCoach(coachId: string, data: CreateOfferDto) {
         try {
             await this.db.initialize()
             const coach = await this.db.getRepository(CoachEntity).findOne({where: {id: coachId}})
