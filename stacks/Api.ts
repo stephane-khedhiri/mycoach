@@ -98,6 +98,12 @@ export function ApiStack({stack, app}: StackContext) {
                 },
                 authorizer: "none"
             },
+            "GET /offers/{id}": {
+                function:{
+                    handler: "packages/api/src/offer/offer.handler",
+                },
+                authorizer: "none"
+            }
         },
 
     });
