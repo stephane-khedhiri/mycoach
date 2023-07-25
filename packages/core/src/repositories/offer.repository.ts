@@ -44,7 +44,29 @@ export class OfferRepository {
     }
 
     // get offers by id
-
+    public async offerById(id: string, selects?: SelectQueryBuilder<OfferEntity>['selects']) {
+        try {
+            await this.db.initialize()
+            // select all by default
+            if(!selects){
+                return this.db.getRepository(OfferEntity)
+                    .createQueryBuilder('offer')
+                    .where('offer.id = :id', {id})
+                    .getOne()
+            }
+            // select defined
+            return this.db.getRepository(OfferEntity)
+                .createQueryBuilder('offer')
+                .select(selects.map(select => ''))
+                .where('offer.id = :id', {id})
+                .getMany()
+        } catch (e) {
+        } finally {
+            if (this.db.isInitialized) {
+                await this.db.destroy()
+            }
+        }
+    }
 
     // create offers
     public async createByCoach(coachId: string, data: Partial<OfferEntity>) {
