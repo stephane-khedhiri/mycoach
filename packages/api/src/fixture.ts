@@ -2,17 +2,15 @@ import { DataSource } from "typeorm";
 import { Builder, fixturesIterator, Loader, Parser, Resolver } from 'typeorm-fixtures-cli/dist';
 import * as path from "path";
 import {databaseConfig} from "@mycoach/core/config/database.conf";
-
+import * as process from "process";
+const datasource = new DataSource(databaseConfig)
 export const load = async () => {
-    let datasource: DataSource | undefined
     try {
-         datasource = new DataSource(databaseConfig)
-
         await datasource.initialize();
         await datasource.synchronize(true);
 
         const loader = new Loader();
-        loader.load(path.resolve(path.join(__dirname, 'fixtures')));
+        loader.load(path.resolve(path.join(process.env.IS_LOCAL ? process.cwd() : __dirname, 'fixtures')));
 
         const resolver = new Resolver();
         const fixtures = resolver.resolve(loader.fixtureConfigs);
