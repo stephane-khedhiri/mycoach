@@ -5,11 +5,13 @@ items:
     lastName: 'admin'
     email: 'admin@admin.com'
     password: 'admin'
+    apiPaypal: 'UGABPNUQMEGDC'
   coach{1..10}:
     firstName: '{{person.firstName}}'
     lastName: '{{person.lastName}}'
     email: '{{internet.email}}'
     password: '{{internet.password}}'
+    apiPaypal: 'UGABPNUQMEGDC'
 
 
 
