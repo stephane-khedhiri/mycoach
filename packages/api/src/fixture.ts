@@ -1,12 +1,12 @@
-import {connection} from "@mycoach/core/connection";
-import type { DataSource } from "typeorm";
+import { DataSource } from "typeorm";
 import { Builder, fixturesIterator, Loader, Parser, Resolver } from 'typeorm-fixtures-cli/dist';
 import * as path from "path";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
 
 export const load = async () => {
     let datasource: DataSource | undefined
     try {
-        datasource = connection()
+         datasource = new DataSource(databaseConfig)
 
         await datasource.initialize();
         await datasource.synchronize(true);

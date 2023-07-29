@@ -8,11 +8,11 @@ import {DataProjection} from "@mycoach/core/projection";
 import {Config} from "sst/node/config";
 import {generatedToken} from "@mycoach/core/util/jwt"
 import type {UserEntityType} from "@mycoach/core/entities";
-import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
+import {DataSource} from "typeorm";
 
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+const coachRepository = new CoachRepository(new DataSource(databaseConfig))
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{user:UserEntityType}> = async (event) => {
 
     try{

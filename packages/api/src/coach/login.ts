@@ -7,12 +7,12 @@ import {plainToInstance} from "class-transformer";
 import {Config} from "sst/node/config";
 import {generatedToken} from "@mycoach/core/util/jwt";
 import {comparePassword} from "@mycoach/core/util/password";
-import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
 import {DataProjection} from "@mycoach/core/projection";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
+import {DataSource} from "typeorm";
 
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+const coachRepository = new CoachRepository(new DataSource(databaseConfig))
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try {
         const loginCoachDto = plainToInstance(LoginCoachDto, JSON.parse(event.body ?? ''))

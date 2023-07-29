@@ -5,10 +5,11 @@ import {
     ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface,
 } from "class-validator";
 import {CoachRepository} from "../repositories/";
-import {connection} from "../connection";
+import {DataSource} from "typeorm";
+import {databaseConfig} from "../config/database.conf";
 
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+const coachRepository = new CoachRepository(new DataSource(databaseConfig))
+
 @ValidatorConstraint()
 export class UniqueOnDatabaseExistConstraint implements ValidatorConstraintInterface {
     validate(value: any, args: ValidationArguments) {

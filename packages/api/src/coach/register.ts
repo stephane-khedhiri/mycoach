@@ -6,16 +6,16 @@ import {plainToInstance} from 'class-transformer';
 import {DomainError, UserBadRequest} from "@mycoach/core/error/errors";
 import {CoachRepository} from "@mycoach/core/src/repositories/";
 import {generatedToken} from "@mycoach/core/util/jwt";
-import {Config} from "sst/node/config";
-import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
 import {DataProjection} from "@mycoach/core/projection";
 import {Mailer} from "@mycoach/core/mailer";
 import template from "./../../../../template/register.coach.html"
+import {databaseConfig} from "@mycoach/core/config/database.conf";
+import {Config} from "sst/node/config"
+import {DataSource} from "typeorm";
 
 // connection database
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+const coachRepository = new CoachRepository(new DataSource(databaseConfig))
 
 const mailer = new Mailer()
 
