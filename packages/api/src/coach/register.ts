@@ -50,7 +50,7 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
                         Buffer.from(Config.PRIVATE_KEY, 'base64')
                     ),
                     data: [user]
-                }), 200)
+                }, {excludeExtraneousValues: true}), 200)
 
     } catch (e: DomainError | any) {
         if (e instanceof DomainError) {
