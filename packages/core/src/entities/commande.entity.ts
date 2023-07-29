@@ -15,4 +15,11 @@ export class CommandeEntity {
 
     @Column()
     price: number
+
+    @ManyToOne(() => CoachEntity, (coach) => coach.commandes)
+    coach: CoachEntity
+
+    @ManyToOne(() => SportsmenEntity, (sportsMan) => sportsMan.commandes)
+    sportsman: SportsmenEntity
+
 }
