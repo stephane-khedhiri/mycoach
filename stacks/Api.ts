@@ -17,6 +17,7 @@ export function ApiStack({stack, app}: StackContext) {
     // get variable in could
     const PUBLIC_KEY = new Config.Secret(stack, "PUBLIC_KEY");
     const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY");
+    const API_PAYPAL_KEY = new Config.Secret(stack, "API_PAYPAL_KEY")
 
     // create Api
     const api = new Api(stack, "Api", {
@@ -133,7 +134,7 @@ export function ApiStack({stack, app}: StackContext) {
     if (app.stage !== 'prod') {
         const fixture = new Function(stack, 'fixture', {
             handler: 'packages/api/src/fixture.load',
-            bind: [cluster],
+            bind: [cluster, API_PAYPAL_KEY],
             copyFiles: [{from: 'fixtures', to: 'packages/api/src/fixtures'}],
             nodejs: {
                 esbuild: {

@@ -1,8 +1,9 @@
 import { DataSource } from "typeorm";
 import { Builder, fixturesIterator, Loader, Parser, Resolver } from 'typeorm-fixtures-cli/dist';
-import * as path from "path";
 import {databaseConfig} from "@mycoach/core/config/database.conf";
-import * as process from "process";
+import {Config} from "sst/node/config"
+import * as path from "path";
+
 const datasource = new DataSource(databaseConfig)
 export const load = async () => {
     try {
@@ -18,6 +19,10 @@ export const load = async () => {
 
         for (const fixture of fixturesIterator(fixtures)) {
             const entity: any = await builder.build(fixture);
+            // edit apipaypal to config secret key
+            if(fixture.entity === 'CoachEntity'){
+                entity.apiPaypal = Config.API_PAYPAL_KEY
+            }
             await datasource.getRepository(fixture.entity).save(entity);
         }
     } catch (err) {
