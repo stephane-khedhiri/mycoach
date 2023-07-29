@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {CreateCoachDto} from "@mycoach/core/dto/coach/create.coach.dto";
 import {validate, validateSync} from "class-validator";
 import {APIGatewayProxyEventV2} from "aws-lambda";
@@ -9,14 +10,18 @@ import {Config} from "sst/node/config";
 import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
 import {DataProjection} from "@mycoach/core/projection";
+import {Mailer} from "@mycoach/core/mailer";
+import template from "./../../../../template/register.coach.html"
 
-
+// connection database
 const datasource = connection()
 const coachRepository = new CoachRepository(datasource)
 
+const mailer = new Mailer()
+
+// mailer
 export const handler = async (event: APIGatewayProxyEventV2) => {
     try {
-
         const createCoachDto = plainToInstance(CreateCoachDto, JSON.parse(event.body ?? ''))
         const errors = await validate(createCoachDto);
 
@@ -25,7 +30,17 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
         }
 
         const user = await coachRepository.create(createCoachDto)
-
+        if(user){
+             await mailer.send({
+                 from: 'noreplay@mycoch.com',
+                 to: user.email,
+                 subject: 'register',
+                 template: {
+                     data: user,
+                     content: template
+                 }
+             })
+        }
         return responseToJson(
             plainToInstance(
                 DataProjection,
