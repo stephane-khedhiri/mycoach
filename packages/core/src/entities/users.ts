@@ -1,3 +1,4 @@
+import "reflect-metadata"
 import {Column, PrimaryGeneratedColumn, BeforeInsert, } from "typeorm";
 import {encodePassword} from '../util/password'
 
@@ -5,15 +6,14 @@ export abstract class UserEntity{
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @Column({unique: true})
+    @Column()
     email: string
 
     @Column()
     password: string
 
-
     @BeforeInsert()
-    public hashPassword(): void {
+    public async hashPassword() {
         this.password = encodePassword(this.password);
     }
 }
