@@ -12,6 +12,12 @@ export abstract class UserEntity{
     @Column()
     password: string
 
+    @Column()
+    firstName: string
+
+    @Column()
+    lastName: string
+
     @BeforeInsert()
     public async hashPassword() {
         this.password = encodePassword(this.password);
