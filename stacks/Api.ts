@@ -134,7 +134,6 @@ export function ApiStack({stack, app}: StackContext) {
         const fixture = new Function(stack, 'fixture', {
             handler: 'packages/api/src/fixture.load',
             bind: [cluster],
-            enableLiveDev: false,
             copyFiles: [{from: 'fixtures', to: 'packages/api/src/fixtures'}],
             nodejs: {
                 esbuild: {
