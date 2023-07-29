@@ -48,6 +48,7 @@ export function ApiStack({stack, app}: StackContext) {
             function: {
                 timeout: 5,
                 bind: [cluster],
+
                 nodejs: {
                     esbuild: {
                         plugins: [
@@ -72,7 +73,27 @@ export function ApiStack({stack, app}: StackContext) {
             "POST /": {
                 function: {
                     handler: "packages/api/src/coach/register.handler",
-                    bind: [PRIVATE_KEY]
+                    bind: [PRIVATE_KEY],
+                    environment: {
+                        APP_MODE: app.mode
+                    },
+                    nodejs: {
+                        loader: {
+                            ".html": "text"
+                        },
+                        minify: false,
+                        esbuild: {
+                            plugins: [
+                                // @ts-ignore
+                                esbuildDecorators({
+                                    tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                                }),
+                            ],
+                        },
+                        external: [
+                            'pg-native',
+                        ]
+                    }
                 },
                 authorizer: "none",
             },
@@ -140,7 +161,6 @@ export function ApiStack({stack, app}: StackContext) {
     stack.addOutputs({
         RDSEndpoint: cluster.clusterEndpoint.socketAddress,
         ApiEndpoint: api.url,
-
     });
     return {api}
 }
