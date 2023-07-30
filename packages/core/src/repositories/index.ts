@@ -1,3 +1,3 @@
-import {CoachRepository} from './coach.repositories'
-import {OfferRepository} from './offer.repository'
-export {CoachRepository, OfferRepository}
+export * from './coach.repository'
+export * from './offer.repository'
+export * from './commande.repository'
