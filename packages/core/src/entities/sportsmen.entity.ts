@@ -1,8 +1,10 @@
-import {UserEntity} from "./users";
-import {Entity, OneToMany} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import {CommandeEntity} from "./commande.entity";
-@Entity('sportsMen')
-export class SportsmenEntity extends UserEntity{
+
+@Entity('sportsmen')
+export class SportsmenEntity {
+    @Column()
+    email: string
     @OneToMany(() => CommandeEntity, (commandes) => commandes.sportsman)
     commandes: CommandeEntity[]
 }
