@@ -49,7 +49,6 @@ export function ApiStack({stack, app}: StackContext) {
             function: {
                 timeout: 5,
                 bind: [cluster],
-
                 nodejs: {
                     esbuild: {
                         plugins: [
@@ -63,15 +62,14 @@ export function ApiStack({stack, app}: StackContext) {
                         'pg-native',
                     ]
                 },
-
             },
             authorizer: 'myAuth',
         },
         routes: {
             // route coach
-            "GET /": "packages/api/src/coach/list.handler",
-            "GET /{id}": "packages/api/src/coach/get.handler",
-            "POST /": {
+            "GET /coach": "packages/api/src/coach/list.handler",
+            "GET /coach/{id}": "packages/api/src/coach/get.handler",
+            "POST /coach": {
                 function: {
                     handler: "packages/api/src/coach/register.handler",
                     bind: [PRIVATE_KEY],
@@ -98,7 +96,7 @@ export function ApiStack({stack, app}: StackContext) {
                 },
                 authorizer: "none",
             },
-            "PUT /": {
+            "PUT /coach": {
                 function: {
                     handler: "packages/api/src/coach/update.handler",
                     bind: [PRIVATE_KEY]
@@ -125,7 +123,9 @@ export function ApiStack({stack, app}: StackContext) {
                     handler: "packages/api/src/offer/offer.handler",
                 },
                 authorizer: "none"
-            }
+            },
+            // commandes
+            "GET /commandes": "packages/api/src/commande/commandes.handler"
         },
 
     });
