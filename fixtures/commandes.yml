@@ -1,0 +1,8 @@
+entity: CommandeEntity
+items:
+  commande{1..20}:
+    name: '{{commerce.product}}'
+    content: '{{commerce.productDescription}}'
+    price: '{{commerce.price}}'
+    coach: '@admin'
+    sportsman: '@sportsman'
