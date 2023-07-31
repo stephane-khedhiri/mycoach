@@ -10,7 +10,7 @@ items:
     firstName: '{{person.firstName}}'
     lastName: '{{person.lastName}}'
     email: '{{internet.email}}'
-    password: '{{internet.password}}'
+    password: '123456'
     apiPaypal: 'isdfqsdfqsdfqs'
 
 
