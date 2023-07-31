@@ -8,8 +8,8 @@ const datasource = new DataSource(databaseConfig)
 export const load = async () => {
     try {
         await datasource.initialize();
-        await datasource.synchronize(true);
 
+        await datasource.synchronize(true);
         const loader = new Loader();
         loader.load(path.resolve(path.join(process.env.IS_LOCAL ? process.cwd() : __dirname, 'fixtures')));
 
@@ -23,6 +23,10 @@ export const load = async () => {
             if(fixture.entity === 'CoachEntity'){
                 entity.apiPaypal = Config.API_PAYPAL_KEY
             }
+            if(fixture.entity === 'CommandeEntity'){
+                entity.content = JSON.stringify(entity.content)
+            }
+
             await datasource.getRepository(fixture.entity).save(entity);
         }
     } catch (err) {
