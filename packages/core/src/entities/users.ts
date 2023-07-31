@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import {Column, PrimaryGeneratedColumn, BeforeInsert, } from "typeorm";
+import {Column, PrimaryGeneratedColumn, BeforeInsert} from "typeorm";
 import {encodePassword} from '../util/password'
 
 export abstract class UserEntity{
