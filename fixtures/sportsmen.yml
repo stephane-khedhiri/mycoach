@@ -1,0 +1,4 @@
+entity: SportsmenEntity
+items:
+  sportsman:
+    email: 'sportsman@admin.com'

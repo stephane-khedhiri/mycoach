@@ -11,6 +11,12 @@ export default {
     };
   },
   stacks(app) {
+
+    app.setDefaultFunctionProps({
+      runtime: 'nodejs18.x',
+      timeout: 20
+    })
+
     if(app.stage !== 'prod'){
       app.setDefaultRemovalPolicy(RemovalPolicy.DESTROY)
     }

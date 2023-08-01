@@ -1,66 +1,185 @@
-import {Api, RDS, StackContext, Function, Config} from "sst/constructs";
+import {Api, RDS, StackContext, Function, Config, Script} from "sst/constructs";
+import {esbuildDecorators} from "@anatine/esbuild-decorators";
+import * as path from "path";
 
 
-export function ApiStack({stack}: StackContext) {
+export function ApiStack({stack, app}: StackContext) {
+    // create database
     const cluster = new RDS(stack, "Cluster", {
-        engine: "postgresql11.13",
+        engine: "mysql5.7",
         defaultDatabaseName: "myCoach",
-        migrations: "services/migrations",
-
+        scaling: {
+            autoPause: true,
+            minCapacity: "ACU_1",
+            maxCapacity: "ACU_1",
+        }
     });
+    // get variable in could
     const PUBLIC_KEY = new Config.Secret(stack, "PUBLIC_KEY");
-    const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY")
+    const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY");
+    const API_PAYPAL_KEY = new Config.Secret(stack, "API_PAYPAL_KEY")
+    const STRIPE_CLIENT_ID = new Config.Secret(stack, "STRIPE_CLIENT_ID")
+    const STRIPE_CLIENT_ID_SECRET = new Config.Secret(stack, "STRIPE_CLIENT_ID_SECRET")
+    const STRIPE_WEBHOOKS_SECRET = new Config.Secret(stack, "STRIPE_WEBHOOKS_SECRET")
 
+    // create Api
     const api = new Api(stack, "Api", {
         authorizers: {
             myAuth: {
                 type: "lambda",
                 responseTypes: ["simple"],
                 function: new Function(stack, "Authorizer", {
-                    handler: "packages/api/src/lambda/coach/auth.handler",
-                    bind: [PUBLIC_KEY]
+                    handler: "packages/api/src/auth.handler",
+                    bind: [PUBLIC_KEY, cluster],
+                    nodejs: {
+                        esbuild: {
+                            plugins: [
+                                // @ts-ignore
+                                esbuildDecorators({
+                                    tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                                }),
+                            ],
+                        },
+                        external: [
+                            'pg-native',
+                        ]
+                    },
                 }),
                 resultsCacheTtl: '5 second'
             }
         },
         defaults: {
             function: {
+                timeout: 5,
                 bind: [cluster],
+                nodejs: {
+                    esbuild: {
+                        plugins: [
+                            // @ts-ignore
+                            esbuildDecorators({
+                                tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                            }),
+                        ],
+                    },
+                    external: [
+                        'pg-native',
+                    ]
+                },
             },
             authorizer: 'myAuth',
         },
         routes: {
-            "GET /": "packages/api/src/lambda/coach/list.handler",
-            "GET /{id}": "packages/api/src/lambda/coach/get.handler",
-            "POST /": {
-                function : {
-                    handler: "packages/api/src/lambda/coach/add.handler",
-                    bind: [PRIVATE_KEY]
+            // route coach
+            "GET /coach": "packages/api/src/coach/list.handler",
+            "GET /coach/{id}": "packages/api/src/coach/get.handler",
+            "POST /coach": {
+                function: {
+                    handler: "packages/api/src/coach/register.handler",
+                    bind: [PRIVATE_KEY],
+                    environment: {
+                        APP_MODE: app.mode
+                    },
+                    nodejs: {
+                        loader: {
+                            ".html": "text"
+                        },
+                        minify: false,
+                        esbuild: {
+                            plugins: [
+                                // @ts-ignore
+                                esbuildDecorators({
+                                    tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                                }),
+                            ],
+                        },
+                        external: [
+                            'pg-native',
+                        ]
+                    }
                 },
                 authorizer: "none",
             },
-            "PUT /": {
-                function:{
-                    handler: "packages/api/src/lambda/coach/update.handler",
+            "PUT /coach": {
+                function: {
+                    handler: "packages/api/src/coach/update.handler",
                     bind: [PRIVATE_KEY]
                 }
             },
             "POST /login": {
-                function:{
-                    handler: "packages/api/src/lambda/coach/login.handler",
-                    bind: [PUBLIC_KEY]
+                function: {
+                    handler: "packages/api/src/coach/login.handler",
+                    bind: [PRIVATE_KEY]
                 },
                 authorizer: "none"
-            }
+            },
+            //offers
+            "POST /offers": "packages/api/src/offer/register.handler",
+            "PUT /offers/{id}": "packages/api/src/offer/update.handler",
+            "GET /offers": {
+                function :{
+                    handler: "packages/api/src/offer/offers.handler"
+                },
+                authorizer: "none"
+            },
+            "GET /offers/{id}": {
+                function:{
+                    handler: "packages/api/src/offer/offer.handler",
+                },
+                authorizer: "none"
+            },
+            // commandes
+            "GET /commandes": "packages/api/src/commande/commandes.handler",
+            // payments create session stripe
+            "POST /payments": {
+                function: {
+                  handler: "packages/api/src/payment/payment.handler",
+                    bind: [STRIPE_CLIENT_ID, STRIPE_CLIENT_ID_SECRET]
+                },
+                authorizer:"none"
+            },
+            // webhoods
+            "POST /payments/webhooks": {
+                function: {
+                    handler: "packages/api/src/payment/payment.webhooks.handler",
+                    bind: [STRIPE_WEBHOOKS_SECRET, STRIPE_CLIENT_ID_SECRET]
+                },
+                authorizer:"none"
+            },
         },
 
     });
-    stack.addOutputs({
-        ApiEndpoint: api.url,
-        SecretArn: cluster.secretArn,
-        ClusterIdentifier: cluster.clusterIdentifier,
-    });
-    return {
-        api,
+
+    // create fixture lambda
+    if (app.stage !== 'prod') {
+        const fixture = new Function(stack, 'fixture', {
+            handler: 'packages/api/src/fixture.load',
+            bind: [cluster, API_PAYPAL_KEY],
+            copyFiles: [{from: 'fixtures', to: 'packages/api/src/fixtures'}],
+            nodejs: {
+                esbuild: {
+                    plugins: [
+                        // @ts-ignore
+                        esbuildDecorators({
+                            tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                        }),
+                    ],
+                    external: [
+                        'pg-native',
+                    ]
+                }
+            }
+        })
+        if (app.mode !== 'dev') {
+            new Script(stack, 'fixtureLoad', {
+                version: '1',
+                onCreate: fixture
+            })
+        }
     }
+// Show the API endpoint in the output
+    stack.addOutputs({
+        RDSEndpoint: cluster.clusterEndpoint.socketAddress,
+        ApiEndpoint: api.url,
+    });
+    return {api}
 }

@@ -1,0 +1,7 @@
+entity: CommandeEntity
+items:
+  commande{1..20}:
+    offer: '@offer1'
+    paymentId: '1'
+    coach: '@admin'
+    sportsman: '@sportsman'
