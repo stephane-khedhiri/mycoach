@@ -60,7 +60,35 @@ export class OfferRepository {
                 .createQueryBuilder('offer')
                 .select(selects.map(select => ''))
                 .where('offer.id = :id', {id})
-                .getMany()
+                .getOne()
+        } catch (e) {
+        } finally {
+            if (this.db.isInitialized) {
+                await this.db.destroy()
+            }
+        }
+    }
+
+    // get offer by id with coach
+    public async offerByIdWithCoach(id: string, selects?: SelectQueryBuilder<OfferEntity>['selects']) {
+        try {
+            await this.db.initialize()
+            // select all by default
+            if(!selects){
+                return this.db.getRepository(OfferEntity)
+                    .createQueryBuilder('o')
+                    .innerJoinAndSelect("o.coach", "coach")
+                    .where('o.id = :id', {id})
+                    .getOne()
+            }
+            // select defined
+            return this.db.getRepository(OfferEntity)
+                .createQueryBuilder('o')
+                .innerJoin("o.coach", "coach")
+                .select(selects.map(select => `o.${select}`))
+
+                .where('offer.id = :id', {id})
+                .getOne()
         } catch (e) {
         } finally {
             if (this.db.isInitialized) {
