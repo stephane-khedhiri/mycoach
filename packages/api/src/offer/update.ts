@@ -1,19 +1,17 @@
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
 import {validateSync} from "class-validator";
-import {DomainError, OfferBadRequest, OfferNotFound, UnAuthorized, UserBadRequest} from "@mycoach/core/error/errors";
+import {DomainError, OfferBadRequest, OfferNotFound} from "@mycoach/core/error/errors";
 import {UpdateOfferDto} from "@mycoach/core/dto/offer/update.offer.dto";
 import {OfferRepository} from "@mycoach/core/src/repositories";
 import {plainToInstance} from "class-transformer";
-import {DataProjection} from "@mycoach/core/projection";
-import {Config} from "sst/node/config";
-import {generatedToken} from "@mycoach/core/util/jwt"
 import type {UserEntityType} from "@mycoach/core/entities";
-import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
 import {OfferProjection} from "@mycoach/core/projection/offer.projection";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
+import {DataSource} from "typeorm";
 
-const datasource = connection()
-const offerRepository = new OfferRepository(datasource)
+// connection a la basse de donnée
+const offerRepository = new OfferRepository(new DataSource(databaseConfig))
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{user:UserEntityType}> = async (event) => {
 
     try{

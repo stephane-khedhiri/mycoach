@@ -2,13 +2,13 @@ import type {APIGatewayProxyHandlerV2} from "aws-lambda";
 import {plainToInstance} from 'class-transformer';
 import {DomainError, OfferNotFound} from "@mycoach/core/error/errors";
 import {OfferRepository} from "@mycoach/core/src/repositories/";
-import {connection} from "@mycoach/core/connection";
 import {responseToJson} from "@mycoach/core/response";
 import {OfferProjection} from "@mycoach/core/projection/offer.projection";
+import {DataSource} from "typeorm";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
 
 // connection a la basse de donnée
-const datasource = connection()
-const offerRepository = new OfferRepository(datasource)
+const offerRepository = new OfferRepository(new DataSource(databaseConfig))
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     try {
