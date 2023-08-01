@@ -1,6 +1,7 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {CoachEntity} from "./coach.entity";
 import {SportsmenEntity} from "./sportsmen.entity";
+import {OfferEntity} from "./offer.entity";
 
 @Entity('commandes')
 export class CommandeEntity {
@@ -8,16 +9,13 @@ export class CommandeEntity {
     id: string
 
     @Column()
-    name: string
-
-    @Column({type: 'json'})
-    content: string[]
-
-    @Column()
-    price: number
+    paymentId: string
 
     @ManyToOne(() => CoachEntity, (coach) => coach.commandes)
     coach: CoachEntity
+
+    @ManyToOne(() => OfferEntity, (offer) => offer.commandes)
+    offer: OfferEntity
 
     @ManyToOne(() => SportsmenEntity, (sportsMan) => sportsMan.commandes)
     sportsman: SportsmenEntity
