@@ -18,6 +18,9 @@ export function ApiStack({stack, app}: StackContext) {
     const PUBLIC_KEY = new Config.Secret(stack, "PUBLIC_KEY");
     const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY");
     const API_PAYPAL_KEY = new Config.Secret(stack, "API_PAYPAL_KEY")
+    const STRIPE_CLIENT_ID = new Config.Secret(stack, "STRIPE_CLIENT_ID")
+    const STRIPE_CLIENT_ID_SECRET = new Config.Secret(stack, "STRIPE_CLIENT_ID_SECRET")
+    const STRIPE_WEBHOOKS_SECRET = new Config.Secret(stack, "STRIPE_WEBHOOKS_SECRET")
 
     // create Api
     const api = new Api(stack, "Api", {
@@ -125,7 +128,23 @@ export function ApiStack({stack, app}: StackContext) {
                 authorizer: "none"
             },
             // commandes
-            "GET /commandes": "packages/api/src/commande/commandes.handler"
+            "GET /commandes": "packages/api/src/commande/commandes.handler",
+            // payments create session stripe
+            "POST /payments": {
+                function: {
+                  handler: "packages/api/src/payment/payment.handler",
+                    bind: [STRIPE_CLIENT_ID, STRIPE_CLIENT_ID_SECRET]
+                },
+                authorizer:"none"
+            },
+            // webhoods
+            "POST /payments/webhooks": {
+                function: {
+                    handler: "packages/api/src/payment/payment.webhooks.handler",
+                    bind: [STRIPE_WEBHOOKS_SECRET, STRIPE_CLIENT_ID_SECRET]
+                },
+                authorizer:"none"
+            },
         },
 
     });
