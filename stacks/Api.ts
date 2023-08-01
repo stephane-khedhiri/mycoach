@@ -17,6 +17,10 @@ export function ApiStack({stack, app}: StackContext) {
     // get variable in could
     const PUBLIC_KEY = new Config.Secret(stack, "PUBLIC_KEY");
     const PRIVATE_KEY = new Config.Secret(stack, "PRIVATE_KEY");
+    const API_PAYPAL_KEY = new Config.Secret(stack, "API_PAYPAL_KEY")
+    const STRIPE_CLIENT_ID = new Config.Secret(stack, "STRIPE_CLIENT_ID")
+    const STRIPE_CLIENT_ID_SECRET = new Config.Secret(stack, "STRIPE_CLIENT_ID_SECRET")
+    const STRIPE_WEBHOOKS_SECRET = new Config.Secret(stack, "STRIPE_WEBHOOKS_SECRET")
 
     // create Api
     const api = new Api(stack, "Api", {
@@ -61,22 +65,41 @@ export function ApiStack({stack, app}: StackContext) {
                         'pg-native',
                     ]
                 },
-
             },
             authorizer: 'myAuth',
         },
         routes: {
             // route coach
-            "GET /": "packages/api/src/coach/list.handler",
-            "GET /{id}": "packages/api/src/coach/get.handler",
-            "POST /": {
+            "GET /coach": "packages/api/src/coach/list.handler",
+            "GET /coach/{id}": "packages/api/src/coach/get.handler",
+            "POST /coach": {
                 function: {
                     handler: "packages/api/src/coach/register.handler",
-                    bind: [PRIVATE_KEY]
+                    bind: [PRIVATE_KEY],
+                    environment: {
+                        APP_MODE: app.mode
+                    },
+                    nodejs: {
+                        loader: {
+                            ".html": "text"
+                        },
+                        minify: false,
+                        esbuild: {
+                            plugins: [
+                                // @ts-ignore
+                                esbuildDecorators({
+                                    tsconfig: path.join(process.cwd(), 'packages/api/tsconfig.json')
+                                }),
+                            ],
+                        },
+                        external: [
+                            'pg-native',
+                        ]
+                    }
                 },
                 authorizer: "none",
             },
-            "PUT /": {
+            "PUT /coach": {
                 function: {
                     handler: "packages/api/src/coach/update.handler",
                     bind: [PRIVATE_KEY]
@@ -89,9 +112,39 @@ export function ApiStack({stack, app}: StackContext) {
                 },
                 authorizer: "none"
             },
-
-            "POST /offer": "packages/api/src/offer/register.handler",
-            "PUT /offer/{id}": "packages/api/src/offer/update.handler",
+            //offers
+            "POST /offers": "packages/api/src/offer/register.handler",
+            "PUT /offers/{id}": "packages/api/src/offer/update.handler",
+            "GET /offers": {
+                function :{
+                    handler: "packages/api/src/offer/offers.handler"
+                },
+                authorizer: "none"
+            },
+            "GET /offers/{id}": {
+                function:{
+                    handler: "packages/api/src/offer/offer.handler",
+                },
+                authorizer: "none"
+            },
+            // commandes
+            "GET /commandes": "packages/api/src/commande/commandes.handler",
+            // payments create session stripe
+            "POST /payments": {
+                function: {
+                  handler: "packages/api/src/payment/payment.handler",
+                    bind: [STRIPE_CLIENT_ID, STRIPE_CLIENT_ID_SECRET]
+                },
+                authorizer:"none"
+            },
+            // webhoods
+            "POST /payments/webhooks": {
+                function: {
+                    handler: "packages/api/src/payment/payment.webhooks.handler",
+                    bind: [STRIPE_WEBHOOKS_SECRET, STRIPE_CLIENT_ID_SECRET]
+                },
+                authorizer:"none"
+            },
         },
 
     });
@@ -100,8 +153,7 @@ export function ApiStack({stack, app}: StackContext) {
     if (app.stage !== 'prod') {
         const fixture = new Function(stack, 'fixture', {
             handler: 'packages/api/src/fixture.load',
-            bind: [cluster],
-            enableLiveDev: false,
+            bind: [cluster, API_PAYPAL_KEY],
             copyFiles: [{from: 'fixtures', to: 'packages/api/src/fixtures'}],
             nodejs: {
                 esbuild: {
@@ -128,7 +180,6 @@ export function ApiStack({stack, app}: StackContext) {
     stack.addOutputs({
         RDSEndpoint: cluster.clusterEndpoint.socketAddress,
         ApiEndpoint: api.url,
-
     });
     return {api}
 }

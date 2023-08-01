@@ -5,11 +5,15 @@ export class OfferProjection {
     id: string
 
     @Expose()
-    title: string
+    name: string
 
     @Expose()
-    description: string
+    content: string
 
     @Expose()
     price: number
+    @Expose()
+    @Type(() =>UserProjection)
+    coach: UserProjection
+
 }

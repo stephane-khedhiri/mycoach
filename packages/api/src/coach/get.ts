@@ -4,13 +4,13 @@ import {
 import {CoachRepository} from "@mycoach/core/src/repositories/";
 import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
 import {plainToInstance} from "class-transformer";
-import {connection} from "@mycoach/core/connection";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
 import {responseToJson} from "@mycoach/core/response";
 import type {UserEntityType} from "@mycoach/core/entities";
 import {DataProjection} from "@mycoach/core/projection";
+import {DataSource} from "typeorm";
 
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+const coachRepository = new CoachRepository(new DataSource(databaseConfig))
 
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType}> = async (event) => {
     try {

@@ -1,5 +1,7 @@
 import {ValidationError} from "class-validator";
 import {constants} from 'http2'
+import Stripe from "stripe"
+
 
 export type ErrorCode = 'UserApiErrors'
 
@@ -26,6 +28,7 @@ export abstract class ResourceNotFound extends DomainError {
     }
 }
 
+
 export class UserNotFound extends ResourceNotFound {
     constructor() {
         super('User');
@@ -39,6 +42,12 @@ export class OfferNotFound extends ResourceNotFound{
         super('Offer');
     }
 }
+export class SportsmanNotFound extends ResourceNotFound{
+    constructor() {
+        super('Sportsman');
+    }
+}
+
 
 export abstract class BadRequest extends DomainError {
     protected constructor(message: string) {
@@ -77,6 +86,46 @@ export class OfferBadRequest extends BadRequest {
         super('OfferInvalid');
     }
 
+    toPlain(){
+        return {
+            ...super.toPlain(),
+            errors: this.formatErrors(this.validationErrors)
+        }
+    }
+}
+export class SportsmanBadRequest extends BadRequest {
+    constructor(readonly validationErrors: ValidationError[]) {
+        super('SportsmanInvalid');
+    }
+
+    toPlain(){
+        return {
+            ...super.toPlain(),
+            errors: this.formatErrors(this.validationErrors)
+        }
+    }
+}
+
+export class PaymentError extends Stripe.errors.StripeAPIError {
+
+    constructor(error: Stripe.StripeRawError) {
+        super(error);
+    }
+
+    toPlain(){
+        return {
+            type: this.type,
+            message: this.message,
+            code: this.code,
+            stack: process.env.IS_LOCAL ? this.stack : undefined
+        }
+    }
+}
+
+export class PaymentBadRequest extends BadRequest {
+    constructor(readonly validationErrors: ValidationError[]) {
+        super('paymentInvalid');
+    }
     toPlain(){
         return {
             ...super.toPlain(),

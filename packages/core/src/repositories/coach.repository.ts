@@ -59,17 +59,6 @@ export class CoachRepository {
         }
     }
 
-    public async existByEmail(email: string) {
-        try {
-            await this.db.initialize()
-            return await this.db.getRepository(CoachEntity).createQueryBuilder('c').where('c.email = :email', {email}).getCount()
-        }catch (err) {}
-        finally {
-            if(this.db.isInitialized){
-                await this.db.destroy()
-            }
-        }
-    }
     public async create(coach: CreateCoachDto){
         try {
             await this.db.initialize()

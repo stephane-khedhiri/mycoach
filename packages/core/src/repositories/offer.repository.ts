@@ -1,12 +1,34 @@
 import {DataSource, SelectQueryBuilder} from "typeorm";
 import {OfferEntity} from "../entities/offer.entity";
 import {CoachEntity} from "../entities/coach.entity"
-import {OfferNotFound, UnAuthorized} from "../error/errors";
+import {OfferNotFound} from "../error/errors";
+import {CreateOfferDto} from "../dto/offer/create.offer.dto";
 
 export class OfferRepository {
-    constructor(private readonly db: DataSource) {
-    }
+    constructor(private readonly db: DataSource) {}
 
+    // get all offers
+    public async offers(selects?: SelectQueryBuilder<OfferEntity>['selects']) {
+        try {
+            await this.db.initialize()
+            if(!selects){
+                return this.db.getRepository(OfferEntity)
+                    .createQueryBuilder('offer')
+                    .select()
+                    .getMany()
+            }
+            return this.db.getRepository(OfferEntity)
+                .createQueryBuilder('offer')
+                .select(selects.map(select => `offer.${select}`))
+                .getMany()
+        }catch (e) {
+
+        }finally {
+            if(this.db.isInitialized){
+               await this.db.destroy()
+            }
+        }
+    }
     public async offersByCoach(coachId: string) {
         try {
             await this.db.initialize()
@@ -22,13 +44,23 @@ export class OfferRepository {
         }
     }
 
-    public async offerById(id: string) {
+    // get offers by id
+    public async offerById(id: string, selects?: SelectQueryBuilder<OfferEntity>['selects']) {
         try {
             await this.db.initialize()
+            // select all by default
+            if(!selects){
+                return this.db.getRepository(OfferEntity)
+                    .createQueryBuilder('offer')
+                    .where('offer.id = :id', {id})
+                    .getOne()
+            }
+            // select defined
             return this.db.getRepository(OfferEntity)
                 .createQueryBuilder('offer')
+                .select(selects.map(select => ''))
                 .where('offer.id = :id', {id})
-                .getMany()
+                .getOne()
         } catch (e) {
         } finally {
             if (this.db.isInitialized) {
@@ -37,7 +69,36 @@ export class OfferRepository {
         }
     }
 
-    public async createByCoach(coachId: string, data: Partial<OfferEntity>) {
+    // get offer by id with coach
+    public async offerByIdWithCoach(id: string, selects?: SelectQueryBuilder<OfferEntity>['selects']) {
+        try {
+            await this.db.initialize()
+            // select all by default
+            if(!selects){
+                return this.db.getRepository(OfferEntity)
+                    .createQueryBuilder('o')
+                    .innerJoinAndSelect("o.coach", "coach")
+                    .where('o.id = :id', {id})
+                    .getOne()
+            }
+            // select defined
+            return this.db.getRepository(OfferEntity)
+                .createQueryBuilder('o')
+                .innerJoin("o.coach", "coach")
+                .select(selects.map(select => `o.${select}`))
+
+                .where('offer.id = :id', {id})
+                .getOne()
+        } catch (e) {
+        } finally {
+            if (this.db.isInitialized) {
+                await this.db.destroy()
+            }
+        }
+    }
+
+    // create offers
+    public async createByCoach(coachId: string, data: CreateOfferDto) {
         try {
             await this.db.initialize()
             const coach = await this.db.getRepository(CoachEntity).findOne({where: {id: coachId}})
@@ -54,7 +115,7 @@ export class OfferRepository {
             }
         }
     }
-
+    // update offers
     public async update(coachId: string, offerId: string, updateOffer: Partial<OfferEntity>) {
         try {
             await this.db.initialize()

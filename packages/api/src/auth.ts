@@ -2,16 +2,17 @@ import {
     APIGatewayRequestSimpleAuthorizerHandlerV2WithContext,
 } from "aws-lambda";
 import {Config} from "sst/node/config"
-import {connection} from "@mycoach/core/connection";
 import {CoachRepository} from "@mycoach/core/repositories/";
 import {verifyTokenOrThrow} from "@mycoach/core/util/jwt";
 import {DomainError, UserNotFound} from "@mycoach/core/error/errors";
 import type {UserEntityType} from "@mycoach/core/entities";
+import {DataSource} from "typeorm";
+import {databaseConfig} from "@mycoach/core/config/database.conf";
 
 
 
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+
+const coachRepository = new CoachRepository(new DataSource(databaseConfig))
 
 
 export const handler: APIGatewayRequestSimpleAuthorizerHandlerV2WithContext<{user?:UserEntityType}> = async (event) => {

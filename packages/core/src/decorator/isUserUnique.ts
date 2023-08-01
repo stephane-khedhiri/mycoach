@@ -4,22 +4,25 @@ import {
     ValidationArguments,
     ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface,
 } from "class-validator";
-import {CoachRepository} from "../repositories/";
-import {connection} from "../connection";
+import {DataSource} from "typeorm";
+import {databaseConfig} from "../config/database.conf";
+import {UserRepository} from "../repositories/user.repository";
 
-const datasource = connection()
-const coachRepository = new CoachRepository(datasource)
+const userRepository = new UserRepository(new DataSource(databaseConfig))
+
 @ValidatorConstraint()
 export class UniqueOnDatabaseExistConstraint implements ValidatorConstraintInterface {
-    validate(value: any, args: ValidationArguments) {
-        return coachRepository.existByEmail(value).then((exist) => !exist)
+    validate(value: any, args: ValidationArguments & {object: Object & {entity: Function}} ) {
+
+        return userRepository.existByEmail(args.object.entity ,value).then((exist) => !exist)
     }
     defaultMessage(args: ValidationArguments) {
         return `${args.property} already exists`; // Message d'erreur personnalisé
     }
 }
-export function IsUserUnique(validationOptions?: ValidationOptions) {
+export function IsUserUnique(entity: Function, validationOptions?: ValidationOptions & {entity?: Function}) {
     return function (object: Object, propertyName: string) {
+        object = {...object, entity}
         registerDecorator({
             name: 'isUserAlreadyExist',
             target: object.constructor,
