@@ -12,7 +12,6 @@ const commandeRepository = new CommandeRepository(new DataSource(databaseConfig)
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType }> = async (event) => {
 
     try {
-        console.log(event.requestContext.authorizer.lambda.user.id)
         const commandes = await commandeRepository.findByCoachWithId(event.requestContext.authorizer.lambda.user.id)
         return responseToJson( {data: commandes}, 200)
     } catch (e: any) {
