@@ -23,9 +23,10 @@ export const load = async () => {
             if(fixture.entity === 'CoachEntity'){
                 entity.apiPaypal = Config.API_PAYPAL_KEY
             }
-            if(fixture.entity === 'CommandeEntity'){
-                entity.content = JSON.stringify(entity.content)
+            if(fixture.entity === 'OfferEntity'){
+                entity.content = [entity.content]
             }
+
 
             await datasource.getRepository(fixture.entity).save(entity);
         }
