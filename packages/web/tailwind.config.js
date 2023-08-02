@@ -86,6 +86,9 @@ module.exports =  {
         xl: '2.5rem',
         '2xl' : '3rem',
       },
+      backgroundImage: {
+        'sidebar-auth-texture': "url('src/ui/assets/medias/auth/texture.jpg')",
+      },
     }
   },
   plugins: [],
