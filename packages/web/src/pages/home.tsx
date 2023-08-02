@@ -8,12 +8,7 @@ export const PageDashboard: FunctionComponent = () => {
 
     return (
         <Layout>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium
-                aliquid, aspernatur blanditiis cupiditate dignissimos illum itaque nemo
-                neque nisi odio omnis quae quisquam rem sapiente soluta, suscipit
-                temporibus velit vitae.
-            </p>
+
         </Layout>
     )
 }
