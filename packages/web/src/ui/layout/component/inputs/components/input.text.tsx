@@ -1,5 +1,5 @@
 import React from 'react'
-import { InputTypeProps } from '@ui/component/inputs'
+import type { InputTypeProps } from './../index'
 
 type InputTextProps = InputTypeProps
 
