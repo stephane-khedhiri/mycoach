@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect } from 'react'
-import { Layout } from '@ui/layout'
+import { Layout } from '../ui/layout/index'
 
 export const PageDashboard: FunctionComponent = () => {
     useEffect(() => {
