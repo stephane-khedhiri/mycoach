@@ -1,15 +1,27 @@
 import React from 'react'
+import './assets/css/layouts/main.css'
+import {LinkNavbar} from "./component/navbar/components/linknavbar";
+import {NavBar} from "./component/navbar";
 
 interface LayoutProps {
     children: React.ReactNode | React.ReactNode[]
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children }) => {
+export const Layout: React.FC<LayoutProps> = ({children}) => {
     return (
-        <div className="main">
-            <div className="content">
-                {Array.isArray(children) ? children.map((child) => child) : children}
+
+            <div className="main">
+            <header>
+                <NavBar>
+                    <LinkNavbar to={'/home'} >home</LinkNavbar>
+                    <LinkNavbar to={'/Login'}>Login</LinkNavbar>
+                </NavBar>
+            </header>
+
+                <div className="content">
+                    {Array.isArray(children) ? children.map((child) => child) : children}
+                </div>
             </div>
-        </div>
+
     )
 }

@@ -1,17 +1,10 @@
+
 .main {
-  @apply flex h-screen;
+  @apply h-screen ;
 }
 
 .content {
   @apply flex flex-col basis-full h-full w-fit overflow-y-auto;
 }
 
-.sidebar {
-  @apply flex flex-col basis-80 h-screen overflow-y-auto;
-  @apply pt-[32px] pb-[32px];
-  @apply bg-neutrals-10 bg-sidebar-texture bg-bottom bg-no-repeat;
-}
 
-.aside {
-  @apply flex flex-col justify-between mt-[32px];
-}

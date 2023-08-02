@@ -2,12 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap');
-
 @font-face {
     font-family: 'Monument Extended';
-    src: url('/public/static/fonts/MonumentExtended-Regular.otf')
+    src: url("packages/web/public/static/fonts/MonumentExtended-Regular.otf")
     format('opentype');
 }
-
-@import 'layouts/main.css';
