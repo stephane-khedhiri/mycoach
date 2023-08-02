@@ -1,5 +1,5 @@
 import React from 'react'
-import 'index.css'
+import './index.css'
 export * from './components/input.email'
 export * from "./components/input.text"
 export * from "./components/input.password"
