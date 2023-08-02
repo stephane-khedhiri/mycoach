@@ -1,5 +1,5 @@
 import {ButtonHTMLAttributes, DetailedHTMLProps, FunctionComponent} from "react"
-import {ButtonTypes, ThemeSizes} from "../../ui/theme";
+import {ButtonTypes, ThemeSizes} from "./../../theme";
 
 type ButtonPropsType = DetailedHTMLProps<
     ButtonHTMLAttributes<HTMLButtonElement>,
