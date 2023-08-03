@@ -5,5 +5,5 @@ export const Api = axios.create({
     headers: {
         "Content-type": "application/json",
     },
-
+    withCredentials:false
 })

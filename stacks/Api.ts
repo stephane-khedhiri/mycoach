@@ -24,6 +24,12 @@ export function ApiStack({stack, app}: StackContext) {
 
     // create Api
     const api = new Api(stack, "Api", {
+        cors: {
+            allowMethods: ["POST","PUT", "GET"],
+            allowOrigins: ["http://localhost:5173"],
+            exposeHeaders: ["*"],
+            allowHeaders:["*"]
+        },
         authorizers: {
             myAuth: {
                 type: "lambda",
@@ -71,7 +77,7 @@ export function ApiStack({stack, app}: StackContext) {
         routes: {
             // route coach
             "GET /coach": "packages/api/src/coach/list.handler",
-            "GET /coach/{id}": "packages/api/src/coach/get.handler",
+            "GET /coach/profile": "packages/api/src/coach/profile.handler",
             "POST /coach": {
                 function: {
                     handler: "packages/api/src/coach/register.handler",
