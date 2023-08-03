@@ -45,6 +45,9 @@ button[type='submit'],
 }
 
 /* colors */
+.btn-primary {
+    background-color: #4640de;
+}
 .btn-secondary {
     background-color:#ccccf5;
 }

@@ -1,10 +1,10 @@
 
 .main {
-  @apply h-screen flex ;
+  @apply h-screen  ;
 }
 
 .content {
-  @apply flex flex-col basis-full h-full w-fit overflow-y-auto;
+  @apply flex h-full w-fit;
 }
 .sidebar {
   @apply flex flex-col basis-80 h-screen overflow-y-auto;
@@ -13,7 +13,7 @@
 }
 
 .aside {
-  @apply  mt-[32px];
+  @apply flex flex-col justify-between mt-[32px];
 }
 
 

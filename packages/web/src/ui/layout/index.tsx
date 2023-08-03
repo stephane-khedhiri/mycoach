@@ -14,7 +14,7 @@ export const Layout: React.FC<LayoutProps> = ({children}) => {
     return (
 
         <div className="main">
-            {!IsAuth ?
+            {!IsAuth() ?
                 <header>
 
                     <NavBar>

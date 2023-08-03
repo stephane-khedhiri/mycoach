@@ -10,8 +10,8 @@ export const NavbarLinks: FunctionComponent<NavbarLinksPropsType> = ({className,
         <div className={className?? 'hidden w-full md:block md:w-auto'}>
             <ul className={"container_link"}>
                 {Array.isArray(children)
-                    ? children.map((child) =>
-                        <li>{child}</li>
+                    ? children.map((child, index) =>
+                        <li key={index}>{child}</li>
                     )
                     : children
                 }

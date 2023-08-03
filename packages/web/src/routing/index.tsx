@@ -6,7 +6,7 @@ import {
     Routes,
     useNavigate,
 } from 'react-router-dom'
-import {PageDashboard} from './../pages/home'
+import {Home} from './../pages/home'
 import {AuthRouting} from './../modules/auth/auth.routing'
 import {useAuth} from './../modules/auth/auth.provider'
 
@@ -25,12 +25,13 @@ export const AppRoutes: FunctionComponent = () => {
             <Routes>
                 {IsAuth() ? (
                     <>
-                        <Route path="/home" element={<PageDashboard/>}/>
-                        <Route path="/*" element={<Navigate to="/home"/>}/>
+
                     </>
                 ) :(
                     <>
-                        <Route path="/auth/*" element={<AuthRouting />} />
+                        <Route index path="/home" element={<Home/>}/>
+                        <Route path={"/*"} element={<Navigate to={'/home'}/>}/>
+                        <Route path={"/auth/*"} element={<AuthRouting />} />
                     </>
                 )
                 }
