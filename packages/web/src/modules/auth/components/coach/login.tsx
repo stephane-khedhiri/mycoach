@@ -76,7 +76,7 @@ export const Login: FunctionComponent = () => {
                     {errors.password && <span>{errors.password.message}</span>}
                 </div>
                 <Button type={'submit'} className={'btn'} color={ThemeColors.PRIMARY}>
-                    Register
+                    Login
                 </Button>
             </form>
             <div className={'legend'}>
