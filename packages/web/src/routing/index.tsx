@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 import {AuthRouting} from './../modules/auth/auth.routing'
 import {useAuth} from './../modules/auth/auth.provider'
-import {PageHome} from "../pages/";
+import {PageHome} from "../pages/pagehome";
 import {PageDashboard} from "../pages/coach/pagedashboard";
 import {Logout} from "../modules/auth/components/logout";
 import {LayoutBackoffice} from "../ui/layout/layout.backoffice";
