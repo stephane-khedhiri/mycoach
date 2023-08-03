@@ -1,22 +1,15 @@
-import {FC} from "react";
-import {CradOffer} from "./components/crad.offer";
-import {OfferTypes} from "../../../../service/offers.service";
+import React, {FC} from "react";
 import './index.css'
 
 
-type OfferProps = {
-    contents: OfferTypes[]
+type CardListPropsType = {
+    children : React.ReactNode | React.ReactNode[]
 }
-export const CradList : FC<OfferProps> = ({contents}) => {
-    console.log(Array.isArray(contents))
-    return(
-        <div className={'offers'}>
-            {Array.isArray(contents) &&
-                contents.map((data, index) => (
-                    <CradOffer key={index} contents={data.content} name={data.name} id={data.id}/>
-                ))
-            }
+export const CradList : FC<CardListPropsType> = ({children}) => {
 
+    return(
+        <div className={'cradlist'}>
+            {children}
         </div>
     )
 }

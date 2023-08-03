@@ -1,0 +1,12 @@
+.coach {
+    @apply w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700
+}
+.coach > div:first-child {
+    @apply px-5 pb-5;
+}
+.coach > div >h5 {
+    @apply text-xl font-semibold tracking-tight text-gray-900 dark:text-white
+}
+.coach > div > div {
+    @apply flex items-center mt-2.5 mb-5
+}
