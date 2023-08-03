@@ -8,7 +8,7 @@ export function WebStack({stack} : StackContext) {
         buildCommand: "npm run build",
         buildOutput : "build",
         environment: {
-            REACT_APP_API_URL: api.url
+            VITE_APP_API_URL: api.url,
         }
     })
     stack.addOutputs({
