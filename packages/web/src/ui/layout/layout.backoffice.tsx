@@ -16,7 +16,7 @@ export const LayoutBackoffice: FC = () => {
 
     return (
         <div className="main">
-            <Sidebar email={'dqsdfqs'}/>
+            <Sidebar email={profile?.email}/>
             <div className="content">
                 <Outlet/>
             </div>
