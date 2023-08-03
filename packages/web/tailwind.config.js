@@ -87,7 +87,7 @@ module.exports =  {
         '2xl' : '3rem',
       },
       backgroundImage: {
-        'sidebar-auth-texture': "url('src/ui/assets/medias/auth/texture.jpg')",
+        'sidebar-auth-texture': "url('/src/ui/layout/assets/medias/auth/texture.jpg')",
       },
     }
   },

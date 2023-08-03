@@ -7,6 +7,8 @@ import {
     useNavigate,
 } from 'react-router-dom'
 import {PageDashboard} from './../pages/home'
+import {AuthRouting} from './../modules/auth/auth.routing'
+import {useAuth} from './../modules/auth/auth.provider'
 
 
 export const Redirect: FunctionComponent<{ to: string }> = ({to}) => {
@@ -17,13 +19,21 @@ export const Redirect: FunctionComponent<{ to: string }> = ({to}) => {
     return null
 }
 export const AppRoutes: FunctionComponent = () => {
+    const {IsAuth} = useAuth()
     return (
         <BrowserRouter>
             <Routes>
-                <>
-                    <Route path="/home" element={<PageDashboard/>}/>
-                    <Route path="/*" element={<Navigate to="/home"/>}/>
-                </>
+                {IsAuth() ? (
+                    <>
+                        <Route path="/home" element={<PageDashboard/>}/>
+                        <Route path="/*" element={<Navigate to="/home"/>}/>
+                    </>
+                ) :(
+                    <>
+                        <Route path="/auth/*" element={<AuthRouting />} />
+                    </>
+                )
+                }
             </Routes>
         </BrowserRouter>
     )

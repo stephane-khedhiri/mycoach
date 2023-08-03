@@ -1,0 +1,13 @@
+
+
+
+.sidebar > div:first-child {
+    @apply flex self-center
+}
+.aside ul li  a {
+    @apply flex items-center w-fit
+}
+.aside ul li a  span {
+ @apply mx-4 font-medium hover:text-brands-primary hover:font-semibold focus:font-semibold focus:text-brands-primary
+}
+
