@@ -1,7 +1,7 @@
 import {Api} from "./index";
 import {AxiosResponse} from "axios";
 
-export type ApiResponseOfferTypes =  AxiosResponse<OfferTypes[]>
+
 export type OfferTypes = {
     id: string;
     name: string;
@@ -10,9 +10,13 @@ export type OfferTypes = {
 }
 
 class OffersService  {
-    gets() :Promise<ApiResponseOfferTypes>{
-        return Api.get("/offers")
+    gets() :Promise<AxiosResponse<OfferTypes[]>>{
+        return Api.get("/offers").then(response => response.data)
     }
+    get(id: string): Promise<AxiosResponse<OfferTypes>>{
+        return Api.get(`/offers/${id}`).then(response => response.data)
+    }
+
 
 }
 export default new OffersService()
