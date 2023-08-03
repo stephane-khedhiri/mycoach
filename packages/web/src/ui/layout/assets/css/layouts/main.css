@@ -4,16 +4,16 @@
 }
 
 .content {
-  @apply flex h-full w-fit;
+  @apply flex flex-wrap  h-full w-fit;
 }
 .sidebar {
-  @apply flex flex-col basis-80 h-screen overflow-y-auto;
-  @apply pt-[32px] pb-[32px];
-  @apply bg-neutrals-10  bg-bottom bg-no-repeat;
+  @apply flex flex-col h-screen w-fit basis-20 ;
+  @apply pt-[32px] pb-[32px] px-12;
+  @apply bg-neutrals-10 border border-brands-primary   bg-bottom bg-no-repeat;
 }
 
 .aside {
-  @apply flex flex-col justify-between mt-[32px];
+  @apply basis-20  justify-between mt-[32px];
 }
 
 
