@@ -4,15 +4,18 @@ import {AppRoutes} from './routing/index'
 import './ui/layout/assets/css/style.css'
 import {AuthProvider} from "./modules/auth/auth.provider";
 import {QueryClient, QueryClientProvider} from 'react-query'
+import {BrowserRouter} from "react-router-dom";
 
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-                <AppRoutes/>
-            </AuthProvider>
+            <BrowserRouter>
+                <AuthProvider>
+                    <AppRoutes/>
+                </AuthProvider>
+            </BrowserRouter>
         </QueryClientProvider>
     </React.StrictMode>,
 )

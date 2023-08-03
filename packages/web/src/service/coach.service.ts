@@ -1,23 +1,37 @@
 import {Api} from "./index";
-import {DataProjection} from "@mycoach/core/src/projection/data.projection"
+import {AxiosResponse} from "axios";
+
 
 export type CoachType = {
+    id: string
     email: string
     firstName: string
     lastName: string
     password: string
-    apiPaypal: string
+    apiPaypal?: string
 }
-export type CoachLoginType = Omit<CoachType, 'lastName' | 'firstName' | 'apiPaypal'>
+
+export type CoachWithTokenType = {accessToken: string, data: CoachType[]}
+
+export type CoachLoginType = Omit<CoachType, 'lastName' | 'firstName' | 'apiPaypal' |'id'>
 class CoachService  {
-    create(coach:CoachType ) {
-        Api.defaults.headers.post = { "Access-Control-Allow-Origin": "*"}
-        return Api.post<DataProjection>("/coach", coach)
+    create(coach:CoachType ): Promise<AxiosResponse<CoachWithTokenType>>  {
+        return Api.post("/coach", coach)
     }
-    async login(login: CoachLoginType) {
-
-        return await Api.post<DataProjection>("/login", login)
+    login(login: CoachLoginType): Promise<AxiosResponse<CoachWithTokenType>>{
+        return  Api.post("/login", login)
 
     }
+    gets(): Promise<AxiosResponse<CoachType[]>> {
+        return Api.get("/coach")
+    }
+    getProfile(): Promise<AxiosResponse<CoachType>> {
+        return Api.get('/coach/profile', {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+            }
+        }).then(response => response.data)
+}
+
 }
 export default new CoachService()

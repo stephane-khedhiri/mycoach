@@ -8,6 +8,7 @@ import {InputEmail, InputPassword} from "../../../../ui/layout/component/inputs"
 import {Button} from "../../../../ui/layout/component/button";
 import {ThemeColors} from "../../../../ui/layout/theme";
 import * as yup from "yup";
+import {} from 'react-router-dom';
 
 type Inputs = {
     email: string
@@ -28,18 +29,23 @@ export const Login: FunctionComponent = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
     } = useForm<Inputs>({
         resolver: yupResolver(schemaRegister)
     })
     const auth = useAuth()
 
-
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
         setApiErrors(undefined)
-        CoachService.login(data).then(response => {
-            if(response.status === 200){
-                auth.coach.login(response.data.accessToken as string)
+        await CoachService.login(data).then(response => {
+            if (response.status === 200) {
+                auth.saveToken(response.data.accessToken)
+                auth.setProfile({
+                    email: response.data.data[0].email,
+                    id: response.data.data[0].id,
+                    lastName: "",
+                    firstName: ''
+                })
             }
         }).catch(reason => {
             setApiErrors(reason.response.data.message)
@@ -69,7 +75,7 @@ export const Login: FunctionComponent = () => {
                     />
                     {errors.password && <span>{errors.password.message}</span>}
                 </div>
-                <Button type={'submit'} className={'btn'} color={ThemeColors.PRIMARY} >
+                <Button type={'submit'} className={'btn'} color={ThemeColors.PRIMARY}>
                     Register
                 </Button>
             </form>

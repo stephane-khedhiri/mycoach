@@ -1,14 +1,16 @@
 import {FunctionComponent, useEffect} from 'react'
 import {
-    BrowserRouter,
     Navigate,
     Route,
     Routes,
     useNavigate,
 } from 'react-router-dom'
-import {Home} from './../pages/home'
 import {AuthRouting} from './../modules/auth/auth.routing'
 import {useAuth} from './../modules/auth/auth.provider'
+import {PageHome} from "../pages/";
+import {PageDashboard} from "../pages/coach/pagedashboard";
+import {Logout} from "../modules/auth/components/logout";
+import {LayoutBackoffice} from "../ui/layout/layout.backoffice";
 
 
 export const Redirect: FunctionComponent<{ to: string }> = ({to}) => {
@@ -19,23 +21,27 @@ export const Redirect: FunctionComponent<{ to: string }> = ({to}) => {
     return null
 }
 export const AppRoutes: FunctionComponent = () => {
-    const {IsAuth} = useAuth()
-    return (
-        <BrowserRouter>
-            <Routes>
-                {IsAuth() ? (
-                    <>
+    const {profile} = useAuth()
 
+    return (
+            <Routes>
+                { profile ? (
+                    <>
+                        <Route path={'/backoffice'} element={<LayoutBackoffice/>}>
+                        <Route index path={"coach"} element={<PageDashboard/>}/>
+                        </Route>
+                        <Route path={"/auth/*"} element={<Navigate to={"/backoffice"}/>}/>
+                        <Route path={"/logout"} element={<Logout />}/>
                     </>
                 ) :(
                     <>
-                        <Route index path="/home" element={<Home/>}/>
-                        <Route path={"/*"} element={<Navigate to={'/home'}/>}/>
-                        <Route path={"/auth/*"} element={<AuthRouting />} />
+                        <Route path={"/auth/*"} element={<AuthRouting/>} />
+                        <Route path={"/backoffice"} element={<Navigate to={'/auth/login'}/>} />
                     </>
                 )
                 }
+                <Route index path="/home" element={<PageHome/>}/>
+                <Route index path="/*" element={<Navigate to={'/home'}/>}/>
             </Routes>
-        </BrowserRouter>
     )
 }

@@ -1,59 +1,48 @@
-import React,{FunctionComponent, useContext, createContext} from "react";
-import {CookiesProvider, useCookies} from "react-cookie";
-import {Redirect} from "../../routing";
+import React, {FunctionComponent, useContext, createContext, useState} from "react";
+import {CoachType} from "../../service/coach.service";
 
 
-
-
-
+type ProfileType = Omit<CoachType, 'password' | 'apiPaypal'>
 export type AuthContextType = {
-
-
-    coach: {
-        login: (token: string) => void
-    }
-
-    logout: () => void
-    IsAuth: () => boolean
+    saveToken: (value: string | null) => void
+    token: string | null
+    setProfile: React.Dispatch<React.SetStateAction<ProfileType | undefined>>
+    profile: ProfileType | undefined
 }
-export const useAuthProvider = () => {
-    const [cookies, setCookie, removeCookie] = useCookies()
 
-    const IsAuth = () => {
-        if (!cookies.token) {
-            return false
-        }
-        return true
-    }
-    const logout = () => {
-        removeCookie('token')
-        return <Redirect to={'/home'}/>
-    }
-    const coach = {
-        login : (token: string) => {
-            setCookie('token', token)
+
+export const useAuthProvider = () => {
+    const [profile, setProfile] = useState<ProfileType | undefined>(undefined)
+    const [token, setToken] = useState<string | null>(null)
+    const saveToken = (value: string | null) => {
+        if (value) {
+            setToken(value)
+            localStorage.setItem('token', value)
+        } else {
+            setToken(null)
+            localStorage.removeItem('token')
         }
     }
 
     return {
-        IsAuth,
-        logout,
-        coach,
+        token,
+        saveToken,
+        profile,
+        setProfile
     }
 }
-export const authContext = createContext<AuthContextType | undefined>( undefined)
-
+export const authContext = createContext<AuthContextType | undefined>(undefined)
 
 
 export const useAuth = () => {
     const context = useContext(authContext)
-    if(!context){
+    if (!context) {
         throw new Error('useMyContext must be used within a MyContextProvider');
     }
     return context
 }
 
-export const AuthWrappedProvider: FunctionComponent<{
+export const AuthProvider: FunctionComponent<{
     children: React.ReactNode
 }> = ({children}) => {
     const auth = useAuthProvider()
@@ -64,12 +53,3 @@ export const AuthWrappedProvider: FunctionComponent<{
     )
 }
 
-export const AuthProvider: FunctionComponent<{
-    children: React.ReactNode
-}> = ({children}) => (
-    <CookiesProvider>
-        <AuthWrappedProvider>
-            {children}
-        </AuthWrappedProvider>
-    </CookiesProvider>
-)

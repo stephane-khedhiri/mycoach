@@ -62,7 +62,7 @@ export const Register: FunctionComponent = () => {
         data.apiPaypal = 'dqlksdjflmqksjdlfkj'
         CoachService.create(data).then(response => {
             if(response.status === 200){
-                auth.coach.login(response.data.accessToken as string)
+                auth.coach.login(response.data.accessToken)
             }
         }).catch(reason => setApiErrors(reason.response.data.message))
 
