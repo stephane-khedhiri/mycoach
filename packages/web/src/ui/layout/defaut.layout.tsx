@@ -1,34 +1,22 @@
-import React from 'react'
+import {FC} from 'react'
 import './assets/css/layouts/main.css'
 import {LinkNavbar} from "./component/navbar/components/linknavbar";
 import {NavBar} from "./component/navbar";
+import {Outlet} from 'react-router-dom'
 
 
-interface LayoutProps {
-    children: React.ReactNode | React.ReactNode[]
-}
-
-export const Layout: React.FC<LayoutProps> = ({children}) => {
+export const DefaultLayout: FC = () => {
     return (
-
         <div className="main">
-
-                <header>
-
-                    <NavBar>
-                        <LinkNavbar to={'/home'}>home</LinkNavbar>
-                        <LinkNavbar to={'/auth/Login'}>Login</LinkNavbar>
-                    </NavBar>
-                </header>
-
-
-
-
-
+            <header>
+                <NavBar>
+                    <LinkNavbar to={'/home'}>home</LinkNavbar>
+                    <LinkNavbar to={'/auth/Login'}>Login</LinkNavbar>
+                </NavBar>
+            </header>
             <div className="content">
-                {Array.isArray(children) ? children.map((child) => child) : children}
+                <Outlet/>
             </div>
         </div>
-
     )
 }
