@@ -7,8 +7,8 @@ export const PageDashboard: FC = () => {
     })
 
     return (
-
-            'qsdfqse'
+        <>
+        </>
 
     )
 }
