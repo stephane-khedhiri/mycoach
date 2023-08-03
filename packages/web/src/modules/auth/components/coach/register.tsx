@@ -54,15 +54,15 @@ export const Register: FunctionComponent = () => {
     } = useForm<Inputs>({
         resolver: yupResolver(schemaRegister)
     })
-    const auth = useAuth()
+    const {saveToken} = useAuth()
 
 
     const onSubmit: SubmitHandler<any> = (data) => {
 
-        data.apiPaypal = 'dqlksdjflmqksjdlfkj'
+
         CoachService.create(data).then(response => {
             if(response.status === 200){
-                auth.coach.login(response.data.accessToken)
+                saveToken(response.data.accessToken)
             }
         }).catch(reason => setApiErrors(reason.response.data.message))
 
