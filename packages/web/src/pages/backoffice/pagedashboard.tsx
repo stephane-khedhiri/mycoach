@@ -1,7 +1,7 @@
-import {FC, useEffect} from "react";
+import {FunctionComponent, useEffect} from "react";
 
 
-export const PageDashboard: FC = () => {
+export const PageDashboard: FunctionComponent = () => {
     useEffect(()=> {
         window.document.title = "Dashboard"
     })

@@ -1,5 +1,5 @@
 import {Api} from "./index";
-import {AxiosResponse} from "axios";
+
 
 
 export type OfferTypes = {
@@ -7,14 +7,26 @@ export type OfferTypes = {
     name: string;
     content: string[];
     price: string;
+    currency: string
 }
 
 class OffersService  {
-    gets() :Promise<AxiosResponse<OfferTypes[]>>{
-        return Api.get("/offers").then(response => response.data)
+    currents(){
+        return Api.get<OfferTypes[]>("/offers/current", {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+            }
+        }).then(response => response.data)
     }
-    get(id: string): Promise<AxiosResponse<OfferTypes>>{
-        return Api.get(`/offers/${id}`).then(response => response.data)
+    get(id: string){
+        return Api.get<OfferTypes>(`/offers/${id}`).then(response => response.data)
+    }
+    remove(id:string) {
+        return Api.delete<OfferTypes>(`/offers/${id}`, {
+            headers: {
+                "Authorization": `Bearer ${localStorage.getItem('token')}`
+            }
+        }).then(response => response.data)
     }
 
 

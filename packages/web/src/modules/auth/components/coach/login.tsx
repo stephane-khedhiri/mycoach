@@ -41,16 +41,16 @@ export const Login: FunctionComponent = () => {
             if (response.status === 200) {
                 auth.saveToken(response.data.accessToken)
                 auth.setProfile({
-                    email: response.data.data[0].email,
-                    id: response.data.data[0].id,
-                    lastName: "",
-                    firstName: ''
+                    email: response.data.data.email,
+                    id: response.data.data.id,
+                    lastName: response.data.data.lastName,
+                    firstName: response.data.data.firstName,
+                    apiStripe: response.data.data.apiStripe
                 })
             }
         }).catch(reason => {
             setApiErrors(reason.response.data.message)
         })
-
     }
 
     return (

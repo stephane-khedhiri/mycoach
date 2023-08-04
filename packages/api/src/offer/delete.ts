@@ -1,7 +1,7 @@
 import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
 import {validateSync} from "class-validator";
 import {DomainError, OfferBadRequest, OfferNotFound} from "@mycoach/core/error/errors";
-import {UpdateOfferDto} from "@mycoach/core/dto/offer/update.offer.dto";
+import {DeleteOfferDto} from "@mycoach/core/dto/offer/delete.offer.dto";
 import {OfferRepository} from "@mycoach/core/src/repositories";
 import {plainToInstance} from "class-transformer";
 import type {UserEntityType} from "@mycoach/core/entities";
@@ -18,13 +18,8 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{user:UserEnt
         if(!event.pathParameters?.id){
           throw new OfferNotFound()
         }
-        const updateCoachDto = plainToInstance(UpdateOfferDto, JSON.parse(event.body??''))
-        const errors = validateSync(updateCoachDto)
-        if(errors.length > 0){
-            throw new OfferBadRequest(errors)
-        }
 
-        const offer = await offerRepository.update(event.requestContext.authorizer.lambda.user.id, event.pathParameters?.id ,updateCoachDto)
+        const offer = await offerRepository.update(event.requestContext.authorizer.lambda.user.id, event.pathParameters?.id)
 
         if(!offer){
             throw new OfferNotFound()

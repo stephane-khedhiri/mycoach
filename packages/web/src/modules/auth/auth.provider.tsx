@@ -1,5 +1,5 @@
-import React, {FunctionComponent, useContext, createContext, useState} from "react";
-import {CoachType} from "../../service/coach.service";
+import React, {FunctionComponent, useContext, createContext, useState, useMemo} from "react";
+import CoachService, {CoachType} from "../../service/coach.service";
 
 
 type ProfileType = Omit<CoachType, 'password' | 'apiPaypal'>
@@ -8,12 +8,15 @@ export type AuthContextType = {
     token: string | null
     setProfile: React.Dispatch<React.SetStateAction<ProfileType | undefined>>
     profile: ProfileType | undefined
+    authenticate: Promise<boolean | void> | undefined
 }
 
 
 export const useAuthProvider = () => {
-    const [profile, setProfile] = useState<ProfileType | undefined>(undefined)
-    const [token, setToken] = useState<string | null>(null)
+    const [profile, setProfile] = useState<ProfileType | undefined>()
+    const [token, setToken] = useState<string | null>(() => {
+        return localStorage.getItem('token')
+    })
     const saveToken = (value: string | null) => {
         if (value) {
             setToken(value)
@@ -23,12 +26,30 @@ export const useAuthProvider = () => {
             localStorage.removeItem('token')
         }
     }
+    const authenticate = useMemo(() => {
+        if (token) {
+            return CoachService.getProfile()
+                .then((data) => {
+                    setProfile({...data})
+                    return true;
+                })
+                .catch(() => {
+                    saveToken(null)
+                });
+
+        }
+        saveToken(null)
+        return
+
+    }, [token]);
+
 
     return {
         token,
         saveToken,
         profile,
-        setProfile
+        setProfile,
+        authenticate
     }
 }
 export const authContext = createContext<AuthContextType | undefined>(undefined)

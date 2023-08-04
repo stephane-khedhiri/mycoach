@@ -11,7 +11,7 @@ export const DefaultLayout: FC = () => {
             <header>
                 <NavBar>
                     <LinkNavbar to={'/home'}>home</LinkNavbar>
-                    <LinkNavbar to={'/auth/Login'}>Login</LinkNavbar>
+                    <LinkNavbar to={'/auth/login'}>Login</LinkNavbar>
                 </NavBar>
             </header>
             <div className="content">

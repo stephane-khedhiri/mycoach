@@ -25,7 +25,7 @@ export function ApiStack({stack, app}: StackContext) {
     // create Api
     const api = new Api(stack, "Api", {
         cors: {
-            allowMethods: ["POST","PUT", "GET"],
+            allowMethods: ["POST","PUT", "GET", "DELETE"],
             allowOrigins: ["http://localhost:5173"],
             exposeHeaders: ["*"],
             allowHeaders:["*"]
@@ -76,7 +76,12 @@ export function ApiStack({stack, app}: StackContext) {
         },
         routes: {
             // route coach
-            "GET /coach": "packages/api/src/coach/list.handler",
+            "GET /coachs": {
+                function: {
+                    handler: "packages/api/src/coach/list.handler",
+                },
+                authorizer: "none"
+            } ,
             "GET /coach/profile": "packages/api/src/coach/profile.handler",
             "POST /coach": {
                 function: {
@@ -120,13 +125,8 @@ export function ApiStack({stack, app}: StackContext) {
             },
             //offers
             "POST /offers": "packages/api/src/offer/register.handler",
-            "PUT /offers/{id}": "packages/api/src/offer/update.handler",
-            "GET /offers": {
-                function :{
-                    handler: "packages/api/src/offer/offers.handler"
-                },
-                authorizer: "none"
-            },
+            "DELETE /offers/{id}": "packages/api/src/offer/delete.handler",
+            "GET /offers/current": "packages/api/src/offer/current.handler",
             "GET /offers/{id}": {
                 function:{
                     handler: "packages/api/src/offer/offer.handler",

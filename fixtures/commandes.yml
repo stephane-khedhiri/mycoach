@@ -1,6 +1,6 @@
 entity: CommandeEntity
 items:
-  commande{1..20}:
+  commande{1..5}:
     offer: '@offer1'
     paymentId: '1'
     coach: '@admin'

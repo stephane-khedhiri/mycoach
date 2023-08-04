@@ -1,6 +1,5 @@
 import {Api} from "./index";
-import {AxiosResponse} from "axios";
-
+import {OfferTypes} from "./offers.service";
 
 export type CoachType = {
     id: string
@@ -8,25 +7,26 @@ export type CoachType = {
     firstName: string
     lastName: string
     password: string
-    apiPaypal?: string
+    offers: OfferTypes[]
+    apiStripe: string |undefined
 }
 
-export type CoachWithTokenType = {accessToken: string, data: CoachType[]}
+export type CoachWithTokenType = {accessToken: string, data: CoachType}
 
-export type CoachLoginType = Omit<CoachType, 'lastName' | 'firstName' | 'apiPaypal' |'id'>
+export type CoachLoginType = Pick<CoachType, 'email' | 'password'>
 class CoachService  {
-    create(coach:CoachType ): Promise<AxiosResponse<CoachWithTokenType>>  {
-        return Api.post("/coach", coach)
+    create(coach:CoachType ) {
+        return Api.post<CoachWithTokenType>("/coach", coach)
     }
-    login(login: CoachLoginType): Promise<AxiosResponse<CoachWithTokenType>>{
-        return  Api.post("/login", login)
+    login(login: CoachLoginType){
+        return  Api.post<CoachWithTokenType>("/login", login)
 
     }
-    gets(): Promise<AxiosResponse<CoachType[]>> {
-        return Api.get("/coach")
+    gets() {
+        return Api.get<CoachType[]>("/coachs")
     }
-    getProfile(): Promise<AxiosResponse<CoachType>> {
-        return Api.get('/coach/profile', {
+    getProfile() {
+        return Api.get<CoachType>('/coach/profile', {
             headers: {
                 "Authorization": `Bearer ${localStorage.getItem('token')}`
             }

@@ -1,4 +1,3 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import {AppRoutes} from './routing/index'
 import './ui/layout/assets/css/style.css'
@@ -9,14 +8,12 @@ import {BrowserRouter} from "react-router-dom";
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+        <AuthProvider>
             <BrowserRouter>
-                <AuthProvider>
-                    <AppRoutes/>
-                </AuthProvider>
+                <AppRoutes/>
             </BrowserRouter>
-        </QueryClientProvider>
-    </React.StrictMode>,
+        </AuthProvider>
+    </QueryClientProvider>
 )
 

@@ -33,8 +33,9 @@ export class OfferRepository {
         try {
             await this.db.initialize()
             return this.db.getRepository(OfferEntity)
-                .createQueryBuilder('offer')
-                .where('offer.coachId = :coachId', {coachId})
+                .createQueryBuilder('o')
+                .where('o.coachId = :coachId', {coachId})
+                .andWhere('o.status = :status', {status:'ACTIVE'})
                 .getMany()
         } catch (e) {
         } finally {
@@ -116,7 +117,7 @@ export class OfferRepository {
         }
     }
     // update offers
-    public async update(coachId: string, offerId: string, updateOffer: Partial<OfferEntity>) {
+    public async update(coachId: string, offerId: string,) {
         try {
             await this.db.initialize()
             const offer = await this.db.getRepository(OfferEntity).findOne({ where: { id: offerId, coach: { id: coachId } }, relations: ['coach']});
@@ -124,7 +125,7 @@ export class OfferRepository {
                 throw new OfferNotFound();
             }
 
-            return this.db.getRepository(OfferEntity).save(Object.assign(offer, updateOffer));
+            return this.db.getRepository(OfferEntity).save(Object.assign(offer, {status:'DISABLED'}));
         } catch (e) {
             throw e
         } finally {

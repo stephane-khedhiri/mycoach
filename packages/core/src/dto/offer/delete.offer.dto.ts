@@ -1,6 +1,6 @@
 import {IsString} from "class-validator";
 
-export class UpdateOfferDto {
+export class DeleteOfferDto {
     @IsString()
     id: string
 
