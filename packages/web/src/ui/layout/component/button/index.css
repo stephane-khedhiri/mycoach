@@ -1,0 +1,140 @@
+/* default */
+.btn,
+button[type='submit'],
+[type='reset'],
+[type='button'] {
+    padding: 0.625rem 1.25rem;
+    align-items: center;
+    text-align: center;
+    color: #ffffff;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    fill: #ffffff;
+    background-color: #4640de;
+}
+/* types */
+.btn-not-plain {
+    color: #4640de;
+    fill: #4640de;
+    background-color: #ffffff;
+}
+.btn-outline {
+    color:#4640de;
+    fill: #4640de;
+    background-color: #ffffff;
+    border: #ccccf5;
+}
+/* sizes */
+.btn-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    padding: 0.75rem 0.75rem;
+}
+.btn-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    padding: 0.75rem 1.5rem;
+}
+.btn-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+.btn-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+/* colors */
+.btn-primary {
+    background-color: #4640de;
+}
+.btn-secondary {
+    background-color:#ccccf5;
+}
+.btn-tertiary {
+    background-color:#e9ebfd;
+}
+.btn-red {
+    background-color:#ff6550;
+}
+.btn-blue {
+    background-color:#26a4ff;
+}
+.btn-purple {
+    background-color:#7b61ff;
+}
+.btn-yellow {
+    background-color:#ffb836;
+}
+.btn-green {
+    background-color:#56cdad;
+}
+/* Responsive */
+/* screen phone*/
+@media only screen and (max-width: 768px) {
+    .btn,
+    button[type='submit'],
+    [type='reset'],
+    [type='button'] {
+        padding: 0.125rem;
+        align-items: center;
+        text-align: center;
+        color: #ffffff;
+        font-size: 1rem;
+        line-height: 1rem;
+        fill: #ffffff;
+        background-color: #4640de;
+    }
+    .btn-sm {
+        font-size: 0.375rem;
+        line-height: 1rem;
+        padding: 0.125rem;
+    }
+    .btn-lg {
+        font-size: 0.5rem;
+        line-height: 1rem;
+        padding: 0.25rem;
+    }
+    .btn-xl {
+        font-size: 0.625rem;
+        line-height: 1rem;
+    }
+    .btn-2xl {
+        font-size: 0.75rem;
+        line-height: 1rem;
+    }
+}
+@media only screen and (min-width: 1200px) {
+    .btn,
+    button[type='submit'],
+    [type='reset'],
+    [type='button'] {
+        padding: 0.75rem 1.50rem;
+        align-items: center;
+        text-align: center;
+        color: #ffffff;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        fill: #ffffff;
+        background-color: #4640de;
+    }
+    /* sizes */
+    .btn-sm {
+        font-size: 1rem;
+        line-height: 1.25rem;
+        padding: 0.625rem 1rem;
+    }
+    .btn-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+        padding: 0.625rem 1.25rem;
+    }
+    .btn-xl {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+    .btn-2xl {
+        font-size: 1.5rem;
+        line-height: 2.25rem;
+    }
+}

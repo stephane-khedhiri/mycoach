@@ -6,8 +6,8 @@ import {CommandeEntity} from "./commande.entity";
 
 @Entity('coachs')
 export class CoachEntity extends UserEntity {
-    @Column()
-    apiPaypal: string
+    @Column({nullable: true})
+    apiStripe: string
     @OneToMany(() => OfferEntity, (offers) => offers.coach)
     offers: OfferEntity[]
     @OneToMany(() => CommandeEntity, (commandes) => commandes.coach)

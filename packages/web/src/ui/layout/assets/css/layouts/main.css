@@ -1,0 +1,24 @@
+.backoffice {
+  @apply h-screen flex flex-wrap
+}
+.main {
+  @apply h-screen;
+}
+.main > div:last-child{
+  @apply flex flex-wrap  h-full;
+}
+.backoffice:last-child {
+  @apply p-4 sm:ml-64 ;
+}
+
+.sidebar {
+  @apply fixed flex flex-col h-screen w-64 left-0 top-0 ;
+  @apply pt-10 pb-[32px] px-12;
+  @apply bg-neutrals-10 border border-brands-primary   bg-bottom bg-no-repeat;
+}
+
+.aside {
+  @apply basis-20 justify-between mt-[32px];
+}
+
+

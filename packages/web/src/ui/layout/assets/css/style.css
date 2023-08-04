@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Monument Extended';
+    src: url("packages/web/public/static/fonts/MonumentExtended-Regular.otf")
+    format('opentype');
+}

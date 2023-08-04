@@ -5,7 +5,13 @@ export class UserProjection {
     @Expose()
     id: string
     @Expose()
+    firstName: string
+    @Expose()
+    lastName: string
+    @Expose()
     email: string
+    @Expose()
+    apiStripe: string | null
     password: string
     @Expose()
     @Type(() => OfferProjection)

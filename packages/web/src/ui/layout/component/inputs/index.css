@@ -1,0 +1,65 @@
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="file"],
+input[type="number"],
+input[type="date"],
+input[type="checkbox"],
+input[type="color"] {
+    @apply w-full pl-[16px] py-[12px] border-[1px];
+    @apply bg-neutrals-0 border-neutrals-20 text-neutrals-80;
+    @apply placeholder-neutrals-40 font-sans font-normal text-base outline-none placeholder:capitalize;
+}
+
+input:focus,
+input:hover {
+    @apply border-brands-primary;
+}
+
+input.has-error {
+    @apply border-accents-red;
+}
+
+input[aria-invalid="true"] {
+    @apply border-accents-red;
+}
+
+/* input with icon */
+.input-container {
+    @apply text-neutrals-20 w-full;
+}
+
+.input-container .icon {
+    @apply pl-[];
+}
+
+/* input file */
+.input-file {
+    @apply w-full flex items-center p-[16px] border-[1px]
+    rounded-[8px] border-dashed border-brands-primary
+    bg-neutrals-10 text-neutrals-80 cursor-pointer fill-brands-primary;
+}
+
+.input-file .icon:first-child {
+    @apply mr-[10px];
+}
+
+.input-file .icon:nth-child(2) {
+    @apply ml-[10px];
+}
+
+.input-file:has(> .icon:only-child) {
+    @apply m-0;
+}
+
+input[type="file"] {
+    @apply bg-neutrals-10 border-[1px] border-brands-primary hidden;
+}
+
+.input-sm {
+    @apply w-1/6 py-[8px] pl-[8px];
+}
+
+.input-lg {
+    @apply w-2/6 py-[16px] pl-[24px];
+}

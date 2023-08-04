@@ -7,5 +7,5 @@ export class DataProjection {
     accessToken?: string
     @Expose()
     @Type(() => UserProjection )
-    data: UserProjection[]
+    data: UserProjection[] | UserProjection
 }

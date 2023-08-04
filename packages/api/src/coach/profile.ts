@@ -14,14 +14,14 @@ const coachRepository = new CoachRepository(new DataSource(databaseConfig))
 
 export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType}> = async (event) => {
     try {
-        const user = await coachRepository.userById(event.pathParameters?.id ?? '', ['id', 'email'])
+        const user = await coachRepository.userById(event.requestContext.authorizer.lambda.user.id,["email", "lastName", "firstName", "id", "apiStripe"])
         if (!user) {
             throw new UserNotFound()
         }
         return responseToJson(
             plainToInstance(
                 DataProjection,
-                {data: [user]},
+                {data: user},
                 {excludeExtraneousValues: true}
             ), 200)
     } catch (e: DomainError | any) {

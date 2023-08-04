@@ -1,0 +1,33 @@
+.offer {
+    @apply h-fit max-w-sm bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700;
+    @apply hover:border-red-200 border-2 hover:p-10 transition duration-300 ease-out
+}
+.offer >h5 {
+    @apply mb-4 text-xl font-medium text-gray-500 dark:text-gray-400
+}
+.offer > div {
+    @apply flex items-baseline text-gray-900
+}
+.offer > div span:first-child {
+    @apply text-3xl font-semibold
+}
+.offer > div span:last-child {
+    @apply text-4xl font-extrabold tracking-tight
+}
+
+.offer > ul {
+    @apply space-y-5 my-7
+}
+.offer > ul > li {
+    @apply flex space-x-3 items-center
+}
+
+.offer > ul > li > svg {
+    @apply flex-shrink-0 w-4 h-4 text-blue-600 dark:text-blue-500
+}
+.offer > ul > li > span {
+    @apply text-base font-normal leading-tight text-gray-500 dark:text-gray-400
+}
+.offer > *:last-child {
+    @apply text-white bg-red-400 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center
+}

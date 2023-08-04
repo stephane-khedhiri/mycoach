@@ -9,11 +9,9 @@ export class OfferProjection {
 
     @Expose()
     content: string
+    @Expose()
+    duration: number
 
     @Expose()
     price: number
-    @Expose()
-    @Type(() =>UserProjection)
-    coach: UserProjection
-
 }

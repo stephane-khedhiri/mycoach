@@ -6,14 +6,16 @@ import {responseToJson} from "@mycoach/core/response";
 import {OfferProjection} from "@mycoach/core/projection/offer.projection";
 import {databaseConfig} from "@mycoach/core/config/database.conf";
 import {DataSource} from "typeorm";
+import {APIGatewayProxyHandlerV2WithLambdaAuthorizer} from "aws-lambda";
+import {UserEntityType} from "@mycoach/core/entities";
 
 
 // connection a la basse de donnée
 const offerRepository = new OfferRepository(new DataSource(databaseConfig))
 
-export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{ user: UserEntityType }> = async (event) => {
     try {
-        const offer = await offerRepository.offers()
+        const offer = await offerRepository.offersByCoach(event.requestContext.authorizer.lambda.user.id)
         if(!offer){
             throw new OfferNotFound()
         }

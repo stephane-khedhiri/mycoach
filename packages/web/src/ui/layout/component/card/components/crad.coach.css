@@ -1,0 +1,14 @@
+.coach {
+    @apply flex flex-col items-center pb-10
+}
+
+.coach > img {
+    @apply w-24 h-24 mb-3 rounded-full shadow-lg
+}
+
+.coach > h5 {
+    @apply mb-1 text-xl font-medium text-gray-900
+}
+.coach span {
+    @apply text-sm text-gray-500 dark:text-gray-400
+}

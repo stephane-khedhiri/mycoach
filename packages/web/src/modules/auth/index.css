@@ -1,0 +1,58 @@
+.auth {
+    @apply flex h-screen bg-neutrals-20;
+}
+
+.auth > div:first-child {
+    @apply flex flex-col basis-3/5 overflow-y-auto;
+    @apply bg-neutrals-10 bg-sidebar-auth-texture bg-cover bg-no-repeat bg-neutrals-40 ;
+}
+
+.logo {
+    @apply mt-6 ml-28;
+}
+
+.auth > div:last-child {
+    @apply flex flex-col mt-14 pl-52 pr-48 capitalize basis-3/5;
+}
+
+.auth ul.nav {
+    @apply flex justify-center space-x-4 rounded;
+    @apply font-semibold bg-brands-secondary text-brands-primary font-sans text-base mb-6;
+}
+
+
+.active {
+    @apply text-neutrals-60 ;
+}
+
+.auth > div:last-child div:first-child ul > a {
+    @apply py-[7px] px-[12px] ;
+}
+
+h3 {
+    @apply text-center pb-[24px];
+}
+
+.auth div:last-child form {
+    @apply flex flex-col w-full;
+}
+.auth div:last-child form > div span{
+    @apply text-accents-red font-semibold flex flex-col items-center;
+}
+
+
+.auth > div:last-child .legend {
+    @apply text-base font-sans text-start;
+}
+
+.legend p:first-child {
+    @apply my-6;
+}
+
+.auth div:last-child .legend p:first-child a:first-child {
+    @apply text-brands-primary font-semibold capitalize;
+}
+
+.legend p:last-child span {
+    @apply text-brands-primary;
+}
