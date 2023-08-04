@@ -2,7 +2,7 @@
 
 
 .sidebar > div:first-child {
-    @apply flex self-center
+    @apply flex flex-col w-32 p-4
 }
 .aside ul li  a {
     @apply flex items-center w-fit

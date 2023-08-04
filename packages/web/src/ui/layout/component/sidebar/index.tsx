@@ -2,9 +2,11 @@ import React from 'react'
 import {Aside} from './components/aside'
 import './index.css'
 
-interface SidebarProps {}
+type SidebarProps =  {
+    email: string | undefined
+}
 
-export const Sidebar: React.FC<SidebarProps> = () => {
+export const Sidebar: React.FC<SidebarProps> = ({email}) => {
     return (
         <div className="sidebar">
             <div>
@@ -13,12 +15,9 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                     alt="avatar"
                     className="rounded-full mr-[16px]"
                 />
-                <div className="flex flex-col">
-          <span className="text-lg font-semibold text-neutrals-100">
-            Jake Gyll
-          </span>
-                    <span className="text-sm text-neutrals-80">jake.gyll@gmail.com</span>
-                </div>
+
+                    <span className="text-sm text-neutrals-80">{email?? ''}</span>
+
             </div>
 
             <Aside/>

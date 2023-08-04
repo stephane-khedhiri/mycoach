@@ -1,27 +1,44 @@
-import {FunctionComponent} from 'react'
-import { NavLink } from 'react-router-dom'
+import {FunctionComponent, useEffect} from 'react'
+import {NavLink, useNavigate} from 'react-router-dom'
 import {useAuth} from "../../../../../../modules/auth/auth.provider";
 
 
 
 
+
 export const Aside: FunctionComponent = () => {
-const {logout} = useAuth()
+    const {saveToken} = useAuth()
+    const navigate = useNavigate()
+
+    const handlerLogout = () => {
+        saveToken(null)
+        navigate('/auth')
+    }
     return (
         <div className="aside">
             <ul>
                 <li>
-                    <NavLink to="/dashboard">
-                        <span>Dashboard</span>
+                    <NavLink to="/backoffice">
+                        <span>dashboard</span>
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/buttons">
-                        <span>Buttons</span>
+                    <NavLink to="/backoffice/setting">
+                        <span>setting</span>
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/logout" onClick={()=>{logout()}}>
+                    <NavLink to="/backoffice/sportsmen">
+                        <span>sportsmen</span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/backoffice/offers">
+                        <span>offers</span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink onClick={handlerLogout}>
                         <span>logout</span>
                     </NavLink>
                 </li>

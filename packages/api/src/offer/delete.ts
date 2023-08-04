@@ -25,7 +25,7 @@ export const handler: APIGatewayProxyHandlerV2WithLambdaAuthorizer<{user:UserEnt
         }
 
         const offer = await offerRepository.update(event.requestContext.authorizer.lambda.user.id, event.pathParameters?.id ,updateCoachDto)
-        console.log(offer)
+
         if(!offer){
             throw new OfferNotFound()
         }
