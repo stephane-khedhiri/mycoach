@@ -20,4 +20,6 @@ export enum ThemeSizes {
 export enum ButtonTypes {
     NOT_PLAIN = 'not-plain',
     OUTLINE = 'outline',
+    SOFT = 'soft',
+
 }

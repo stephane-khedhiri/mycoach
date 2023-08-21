@@ -1,5 +1,5 @@
 import React, {ButtonHTMLAttributes, DetailedHTMLProps, FunctionComponent} from "react"
-import {ButtonTypes, ThemeSizes} from "./../../theme";
+import {ButtonTypes, ThemeColors, ThemeSizes} from "./../../theme";
 import './index.css'
 
 type ButtonPropsType = DetailedHTMLProps<
@@ -14,6 +14,7 @@ export type ButtonProps = ButtonPropsType & {
     types?: ButtonTypes
     size?: ThemeSizes
     onClick?: Function
+    rounded?: boolean
 }
 export const Button: FunctionComponent<ButtonProps> = ({
     className,
@@ -21,13 +22,17 @@ export const Button: FunctionComponent<ButtonProps> = ({
     color,
     types,
     size,
+    rounded,
     onClick}  ) => {
-    const classNames = ['btn', className]
-    if (color){
-        classNames.push(`btn-${color}`)
-    }
-    if(types){
+    const classNames = [`btn`, className]
+    if(types && types.toUpperCase() in ButtonTypes ){
         classNames.push(`btn-${types}`)
+        classNames.push(color && color in ThemeColors ? `btn-${types}-${color}`: `btn-${types}-primary`)
+    }else{
+        classNames.push(`btn-${color?? ThemeColors.PRIMARY}`)
+    }
+    if(rounded){
+        classNames.push(`btn-rounded`)
     }
     if(size){
         classNames.push(`btn-${size}`)
